@@ -7,6 +7,7 @@
     "dev": "webpack-dev-server --env=dev",
     "preprod": "rm -rf ./dist",
     "prod": "webpack --env=prod",
+    "postprod": "zip -r -j dist/strawberry.zip dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
