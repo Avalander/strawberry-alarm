@@ -66,22 +66,36 @@ export default function Game({ DOM }) {
 				tilePosition: { x: 0, y: 0 },
 			},
 		}),
-		'elisa-idle': sprite({
+		elisa_idle: sprite({
 			texture: [ spritesheet, 'elisa-idle.png' ],
 			props: { position: { x: 50, y: config.screen.height/2 }},
 		}),
-		'elisa-running': animatedSprite({
+		elisa_running: animatedSprite({
 			frames: R.range(1, 9).map(i => ([ spritesheet, `elisa-run-0${i}.png`])),
 			props: {
 				position: { x: 50, y: config.screen.height/2 },
 				animationSpeed: 0.2,
-				hide: false,
+				hide: true,
 			},
 		}),
-		floor: tilingSprite({
+		floor_01: tilingSprite({
 			texture: [ spritesheet, 'ground-02.png' ],
 			props: { width: config.screen.width, height: 64, 
 				position: { x: 0, y: config.screen.height/2 + 100 },
+				tilePosition: { x: 0, y: 0 },
+			},
+		}),
+		floor_02: tilingSprite({
+			texture: [ spritesheet, 'ground-05.png' ],
+			props: { width: config.screen.width, height: 64,
+				position: { x: 0, y: config.screen.height/2 + 100 + 64 },
+				tilePosition: { x: 0, y: 0 },
+			},
+		}),
+		floor_03: tilingSprite({
+			texture: [ spritesheet, 'ground-08.png' ],
+			props: { width: config.screen.width, height: 64,
+				position: { x: 0, y: config.screen.height/2 + 100 + 128 },
 				tilePosition: { x: 0, y: 0 },
 			},
 		}),
@@ -92,13 +106,15 @@ export default function Game({ DOM }) {
 			(acc, [keyboard, x]) => {
 				if (keyboard[keys.right]) {
 					acc.background.props.tilePosition.x -= 1
-					acc.floor.props.tilePosition.x -= 20
-					acc['elisa-running'].props.hide = false
-					acc['elisa-idle'].props.hide = true
+					acc.floor_01.props.tilePosition.x -= 20
+					acc.floor_02.props.tilePosition.x -= 20
+					acc.floor_03.props.tilePosition.x -= 20
+					acc.elisa_running.props.hide = false
+					acc.elisa_idle.props.hide = true
 				}
 				else {
-					acc['elisa-running'].props.hide = true
-					acc['elisa-idle'].props.hide = false
+					acc.elisa_running.props.hide = true
+					acc.elisa_idle.props.hide = false
 				}
 				return acc
 			},
