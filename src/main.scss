@@ -33,6 +33,12 @@ $color-text: #eef;
 	text-align: center;
 }
 
+.column {
+	display: flex;
+	flex-direction: column;
+	padding: 5px;
+}
+
 h1 {
 	font-size: 36px;
 }

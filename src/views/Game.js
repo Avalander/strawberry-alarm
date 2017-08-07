@@ -4,7 +4,6 @@ import dropRepeats from 'xstream/extra/dropRepeats'
 
 import {
 	div,
-	h1,
 	span,
 } from '@cycle/dom'
 
@@ -50,11 +49,12 @@ const inputHandler = () => {
 export default function Game({ DOM }) {
 	const gameOver$ = xs.never()
 
-	const vtree$ = xs.of(
-		div([
-			span(`Random text here`),
-		])
-	)
+	const instructionsText = `Aliens are invading your castle. Go and fight them.
+	Use arrow keys to move and space to attack.`
+	const vtree$ = xs.periodic(100).take(instructionsText.length + 1)
+		.map(i => instructionsText.substring(0, i).split('\n'))
+		.map(text => div('.column', text.map(x => span(x))))
+		
 	const keyboard$ = inputHandler()
 
 	const spritesheet = 'src/assets/sprites.json'
