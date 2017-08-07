@@ -35,7 +35,12 @@ const createSprite = (data) => {
 
 const create = {
 	'sprite': ({ texture }) => new Sprite(getTexture(texture)),
-	'animatedSprite': ({}) => {},
+	'animatedSprite': ({ frames, props }) => {
+		const sprite = new AnimatedSprite(frames.map(getTexture))
+		sprite.animationSpeed = props.animationSpeed || 1
+		sprite.play()
+		return sprite
+	},
 	'tilingSprite': ({ texture, props }) => new TilingSprite(getTexture(texture), props.width, props.height),
 }
 
@@ -65,6 +70,7 @@ const updateInteraction = (sprite, data, interaction$) => {
 
 const Main = (app, sprites$, interaction$) => () => {
 	const spritesLookup = {}
+	const hidden = new Set()
 
 	sprites$.addListener({
 		next: ({ action, sprites }) => {
@@ -81,6 +87,14 @@ const Main = (app, sprites$, interaction$) => () => {
 				}
 				updateSprite(sprite, data.props)
 				updateInteraction(sprite, data.props, interaction$)
+				if (data.props.hide) {
+					app.stage.removeChild(sprite)
+					hidden.add(sprite)
+				}
+				else if (hidden.has(sprite)) {
+					hidden.delete(sprite)
+					app.stage.addChild(sprite)
+				}
 			})
 		}
 	})
