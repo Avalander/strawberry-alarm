@@ -3,7 +3,7 @@ import xs from 'xstream'
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
 
-import makePIXIDriver from 'drivers/pixi-driver'
+import makePIXIDriver, { clear } from 'drivers/pixi-driver'
 import makeStateMachine from 'drivers/state-machine'
 
 import {
@@ -13,7 +13,8 @@ import {
 } from 'views'
 
 import 'main.scss'
-
+import atlas from 'assets/sprites.json'
+import textures from 'assets/sprites.png'
 
 function main(sources) {
 	const route$ = sources.router.define({
@@ -33,11 +34,12 @@ function main(sources) {
 		.flatten()
 		.startWith('main-menu')
 	const viewPixi$ = view$
-		.map(x => x.PIXI || [])
+		.map(x => x.PIXI || xs.of(clear()))
 		.flatten()
 
 	return {
 		DOM: viewDom$,
+		PIXI: viewPixi$,
 		router: viewRouter$,
 	}
 }
@@ -45,7 +47,7 @@ function main(sources) {
 const drivers = {
 	DOM: makeDOMDriver('#app'),
 	PIXI: makePIXIDriver('#game-view', {
-		resources: [],
+		resources: [ atlas ],
 		screenSize: { width: 768, height: 640 },
 	}),
 	router: makeStateMachine(),

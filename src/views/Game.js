@@ -6,6 +6,11 @@ import {
 	span,
 } from '@cycle/dom'
 
+import {
+	draw,
+	clear,
+} from 'drivers/pixi-driver'
+
 
 export default function Game({ DOM }) {
 	const countDown$ = xs.periodic(1000)
@@ -22,8 +27,24 @@ export default function Game({ DOM }) {
 		])
 	)
 
+	const spritesheet = 'src/assets/sprites.json'
+	const game$ = xs.of(draw([{
+		texture: [ spritesheet, 'ground-01.png' ],
+		position: { x: 0, y: 0 },
+	}, {
+		texture: [ spritesheet, 'ground-03.png' ],
+		position: { x: 64, y: 0 },
+	}, {
+		texture: [ spritesheet, 'ground-04.png' ],
+		position: { x: 0, y: 64 },
+	}, {
+		texture: [ spritesheet, 'ground-06.png' ],
+		position: { x: 64, y: 64 },
+	}]))
+
 	return {
 		DOM: vtree$,
+		PIXI: game$,
 		router: gameOver$,
 	}
 }

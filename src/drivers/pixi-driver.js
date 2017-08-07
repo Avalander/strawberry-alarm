@@ -10,7 +10,7 @@ import xs from 'xstream'
 
 const onProgress = (loader, resource) => console.log(`Loading... ${loader.progress}% - '${resource.url}'`)
 
-const getTexture = (id) => loader.resources['src/assets/robo.json'].textures[id]
+const getTexture = ([ spritesheet, id ]) => loader.resources[spritesheet].textures[id]
 
 const updateSprite = (sprite, data) => {
 	if (data.position) sprite.position.set(data.position.x, data.position.y)
@@ -57,7 +57,12 @@ const Main = (app, sprites$, interaction$) => () => {
 	app.stage.addChild(named)
 
 	sprites$.addListener({
-		next: (sprites) => {
+		next: ({ action, sprites }) => {
+			if (action === 'clear') {
+				unnamed.removeChildren()
+				named.removeChildren()
+				return
+			}
 			sprites.forEach(data => {
 				if (!data.name) {
 					unnamed.addChild(updateSprite(createSprite(data), data))
@@ -95,3 +100,6 @@ export default function makePIXIDriver(root, { resources=[], screenSize }) {
 		}
 	}
 }
+
+export const draw = (sprites) => ({ action: 'draw', sprites })
+export const clear = () => ({ action: 'clear' })

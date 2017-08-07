@@ -7,7 +7,8 @@
     "dev": "webpack-dev-server --env=dev",
     "preprod": "rm -rf ./dist",
     "prod": "webpack --env=prod",
-    "postprod": "zip -r -j dist/strawberry.zip dist",
+    "postprod": "zip -r dist/strawberry.zip dist",
+    "spritesheet": "spritesheet-js --format pixi.js --trim --padding 2 --name sprites --path ./src/assets/ src/assets/sprites/*.png",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -24,6 +25,7 @@
     "json-loader": "^0.5.7",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
+    "spritesheet-js": "^1.2.6",
     "style-loader": "^0.18.2",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1",

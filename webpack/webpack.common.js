@@ -22,6 +22,16 @@ module.exports = (baseDir, folders) => ({
 					plugins: [ 'transform-object-rest-spread' ]
 				}
 			}
+		}, {
+			test: /\.jpe?g$|\.svg$|\.png$|\.json$/,
+			exclude: /node_modules/,
+			include: /assets/,
+			use: {
+				loader: 'file-loader',
+				options: {
+					name: '[path][name].[ext]'
+				}
+			}
 		}]
 	},
 	plugins: [
