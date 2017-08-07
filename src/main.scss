@@ -10,3 +10,9 @@
 	top: 10px;
 	left: 10px;
 }
+
+.content {
+	display: flex;
+	flex-direction: column;
+	align-content: center;
+}

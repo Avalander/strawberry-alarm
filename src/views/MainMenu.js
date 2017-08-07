@@ -12,7 +12,7 @@ export default function MainMenu({ DOM }) {
 		.mapTo('game')
 
 	const vtree$ = xs.of(
-		div([
+		div('.content', [
 			h1('Main Menu!'),
 			button('.play', 'Play')
 		])
