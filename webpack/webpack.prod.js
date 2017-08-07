@@ -17,8 +17,7 @@ module.exports = (baseDir, folders) => merge(commonConfig(baseDir, folders), {
 					options: {
 						includePaths: [ path.resolve(baseDir, folders.SRC) ]
 					}
-				}],
-				publicPath: folders.DIST
+				}]
 			})
 		}]
 	},
