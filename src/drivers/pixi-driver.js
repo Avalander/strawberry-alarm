@@ -2,8 +2,13 @@ import {
 	Application,
 	Container,
 	Sprite,
+	Text,
 	loader,
 } from 'pixi.js'
+import {
+	AnimatedSprite,
+	TilingSprite,
+} from 'pixi.js/lib/extras'
 
 import xs from 'xstream'
 
@@ -17,11 +22,21 @@ const updateSprite = (sprite, data) => {
 	if (data.hasOwnProperty('anchor')) sprite.anchor.set(data.anchor)
 	if (data.hasOwnProperty('rotation')) sprite.rotation = data.rotation
 	if (data.hasOwnProperty('buttonMode')) sprite.buttonMode = data.buttonMode
+	if (data.hasOwnProperty('tilePosition')) {
+		sprite.tilePosition.x = data.tilePosition.x
+		sprite.tilePosition.y = data.tilePosition.y
+	}
 	return sprite
 }
 
 const createSprite = (data) => {
 	return new Sprite(getTexture(data.texture))
+}
+
+const create = {
+	'sprite': ({ texture }) => new Sprite(getTexture(texture)),
+	'animatedSprite': ({}) => {},
+	'tilingSprite': ({ texture, props }) => new TilingSprite(getTexture(texture), props.width, props.height),
 }
 
 const TimeSource = (app) => {
@@ -51,31 +66,21 @@ const updateInteraction = (sprite, data, interaction$) => {
 const Main = (app, sprites$, interaction$) => () => {
 	const spritesLookup = {}
 
-	const unnamed = new Container()
-	app.stage.addChild(unnamed)
-	const named = new Container()
-	app.stage.addChild(named)
-
 	sprites$.addListener({
 		next: ({ action, sprites }) => {
 			if (action === 'clear') {
-				unnamed.removeChildren()
-				named.removeChildren()
+				app.stage.removeChildren()
 				return
 			}
 			sprites.forEach(data => {
-				if (!data.name) {
-					unnamed.addChild(updateSprite(createSprite(data), data))
-					return
-				}
-				let sprite = spritesLookup[data.name]
+				let sprite = spritesLookup[data.key]
 				if (!sprite) {
-					sprite = createSprite(data)
-					named.addChild(sprite)
-					spritesLookup[data.name] = sprite
+					sprite = create[data.type](data)
+					app.stage.addChild(sprite)
+					spritesLookup[data.key] = sprite
 				}
-				updateSprite(sprite, data)
-				updateInteraction(sprite, data, interaction$)
+				updateSprite(sprite, data.props)
+				updateInteraction(sprite, data.props, interaction$)
 			})
 		}
 	})
@@ -103,3 +108,7 @@ export default function makePIXIDriver(root, { resources=[], screenSize }) {
 
 export const draw = (sprites) => ({ action: 'draw', sprites })
 export const clear = () => ({ action: 'clear' })
+
+export const sprite = ({ key=Symbol(), texture, props }) => ({ key, type: 'sprite', texture, props })
+export const tilingSprite = ({ key=Symbol(), texture, props }) => ({ key, type: 'tilingSprite', texture, props })
+export const animatedSprite = ({ key=Symbol(), frames, props }) => ({ key, type: 'animatedSprite', frames, props })

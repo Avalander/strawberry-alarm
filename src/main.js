@@ -12,9 +12,11 @@ import {
 	MainMenu,
 } from 'views'
 
+import config from 'config'
+
 import 'main.scss'
 import atlas from 'assets/sprites.json'
-import textures from 'assets/sprites.png'
+import 'assets/sprites.png'
 
 function main(sources) {
 	const route$ = sources.router.define({
@@ -48,7 +50,7 @@ const drivers = {
 	DOM: makeDOMDriver('#app'),
 	PIXI: makePIXIDriver('#game-view', {
 		resources: [ atlas ],
-		screenSize: { width: 768, height: 640 },
+		screenSize: { width: config.screen.width, height: config.screen.height },
 	}),
 	router: makeStateMachine(),
 }

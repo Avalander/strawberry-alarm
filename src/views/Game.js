@@ -9,7 +9,13 @@ import {
 import {
 	draw,
 	clear,
+	sprite,
+	tilingSprite,
 } from 'drivers/pixi-driver'
+
+import R from 'ramda'
+
+import config from 'config'
 
 
 export default function Game({ DOM }) {
@@ -28,23 +34,51 @@ export default function Game({ DOM }) {
 	)
 
 	const spritesheet = 'src/assets/sprites.json'
-	const game$ = xs.of(draw([{
-		texture: [ spritesheet, 'ground-01.png' ],
-		position: { x: 0, y: 0 },
-	}, {
-		texture: [ spritesheet, 'ground-03.png' ],
-		position: { x: 64, y: 0 },
-	}, {
-		texture: [ spritesheet, 'ground-04.png' ],
-		position: { x: 0, y: 64 },
-	}, {
-		texture: [ spritesheet, 'ground-06.png' ],
-		position: { x: 64, y: 64 },
-	}]))
+
+	const initState = [
+		tilingSprite({
+			texture: [ spritesheet, 'bg-exterior.png' ],
+			props: { width: config.screen.width, height: config.screen.height },
+		}),
+		sprite({
+			texture: [ spritesheet, 'elisa-idle.png' ],
+			props: { position: { x: 50, y: config.screen.height/2 }},
+		}),
+		sprite({
+			texture: [ spritesheet, 'ground-01.png' ],
+			props: { position: { x: 0, y: config.screen.height/2 + 100 }},
+		}),
+		...R.range(1, 11).map(i => sprite({
+			texture: [ spritesheet, 'ground-02.png' ],
+			props: { position: { x: 64 * i, y: config.screen.height/2 + 100 }},
+		})),
+		sprite({
+			texture: [ spritesheet, 'ground-03.png' ],
+			props: { position: { x: 64 * 11, y: config.screen.height/2 + 100 }},
+		}),
+	]
+
+	const state$ = xs.periodic(100)
+		.fold(
+			(acc, x) => {
+				acc[0].props.tilePosition = acc[0].props.tilePosition || { x: 0, y: 0}
+				acc[0].props.tilePosition.x -= 1
+				return acc
+			},
+			initState)
+		.map(x => draw(x))
+	
+	
+	xs.of(draw([
+		tilingSprite({
+			texture: [ spritesheet, 'bg-exterior.png' ],
+			props: { width: config.screen.width, height: config.screen.height },
+		}),
+	]))
 
 	return {
 		DOM: vtree$,
-		PIXI: game$,
+		PIXI: state$,
 		router: gameOver$,
 	}
 }
