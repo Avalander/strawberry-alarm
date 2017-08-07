@@ -8,7 +8,7 @@ The themes I want to try are *Alien invasion* and *Castles*. My intention is to 
 
 With this project I want to explore whether functional reactive programming can be successfully used in games. I intend to capture the user input and time effects into streams, apply map-reduce to these streams to generate the game state, and finally render that game state to the screen.
 
-I will be happy if I can deliver something playable by the end of the week. Unfortunately, this week I'm back to work after vacation and I've got a few social commitements that I must honour, so I expect to be able to dedicate only about twelve hours more to the project.
+I will be happy if I can deliver something playable by the end of the week. Unfortunately, this week I'm back to work after vacation and I've got a few social commitments that I must honour, so I expect to be able to dedicate only about twelve hours more to the project.
 
 So far, I have managed to put together a parallax background and the walking animation for the hero sprite.
 
