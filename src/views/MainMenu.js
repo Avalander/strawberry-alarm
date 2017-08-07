@@ -13,8 +13,8 @@ export default function MainMenu({ DOM }) {
 
 	const vtree$ = xs.of(
 		div('.content', [
-			h1('Main Menu!'),
-			button('.play', 'Play')
+			h1('Strawberry Alert'),
+			div(button('.play', 'Play')),
 		])
 	)
 

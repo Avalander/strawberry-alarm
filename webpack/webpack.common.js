@@ -32,6 +32,9 @@ module.exports = (baseDir, folders) => ({
 					name: '[path][name].[ext]'
 				}
 			}
+		}, {
+			test: /\.(otf|ttf|woff|woff2)/,
+			use: 'file-loader?name=fonts/[name].[ext]'
 		}]
 	},
 	plugins: [
