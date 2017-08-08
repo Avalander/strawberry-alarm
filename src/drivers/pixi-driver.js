@@ -26,6 +26,7 @@ const updateSprite = (sprite, data) => {
 		sprite.tilePosition.x = data.tilePosition.x
 		sprite.tilePosition.y = data.tilePosition.y
 	}
+	if (data.hasOwnProperty('zOrder')) sprite.zOrder = data.zOrder
 	return sprite
 }
 
