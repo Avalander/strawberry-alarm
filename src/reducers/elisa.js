@@ -8,28 +8,31 @@ import config, { spritesheet } from 'config'
 import R from 'ramda'
 
 
+const zOrder = 2
+const y = config.screen.height/2 + 40
+
 const initElisaIdle = sprite({
 	texture: [ spritesheet, 'elisa-idle.png' ],
-	props: { position: { x: 50, y: config.screen.height/2 }, zOrder: 2},
+	props: { position: { x: 50, y }, zOrder },
 })
 
 const initElisaRunning = animatedSprite({
 	frames: R.range(1, 9).map(i => ([ spritesheet, `elisa-run-0${i}.png`])),
 	props: {
-		position: { x: 50, y: config.screen.height/2 },
+		position: { x: 50, y },
 		animationSpeed: 0.2,
 		visible: false,
-		zOrder: 2,
+		zOrder,
 	},
 })
 
 const initElisaAttacking = animatedSprite({
 	frames: R.range(1, 7).map(i => ([ spritesheet, `elisa-attack-0${i}.png`])),
 	props: {
-		position: { x: 50, y: config.screen.height/2 },
+		position: { x: 50, y },
 		animationSpeed: 0.2,
 		visible: false,
-		zOrder: 2,
+		zOrder,
 	}
 })
 

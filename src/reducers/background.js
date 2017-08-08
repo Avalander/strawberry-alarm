@@ -1,4 +1,5 @@
 import {
+	sprite,
 	tilingSprite,
 } from 'drivers/pixi-driver'
 
@@ -20,10 +21,22 @@ export const backgroundReducer = ({ background=initBackground }, [ action, dt ])
 	return { background }
 }
 
+const initMoon = sprite({
+	texture: [ spritesheet, 'bg-moon.png' ],
+	props: { position: { x: 400, y: 0 }, zOrder: 1 },
+})
+
+export const moonReducer = ({ moon=initMoon }, [ action, dt ]) => {
+	if (action === 'move') {
+		moon.props.x -= 0.1
+	}
+	return { moon }
+}
+
 const initFloor01 = tilingSprite({
 	texture: [ spritesheet, 'ground-02.png' ],
-	props: { width: config.screen.width, height: 64, 
-		position: { x: 0, y: config.screen.height/2 + 100 },
+	props: { width: config.screen.width, height: 32, 
+		position: { x: 0, y: config.screen.height/2 + 140 },
 		tilePosition: { x: 0, y: 0 },
 		zOrder: 1,
 	},
@@ -31,8 +44,8 @@ const initFloor01 = tilingSprite({
 
 const initFloor02 = tilingSprite({
 	texture: [ spritesheet, 'ground-05.png' ],
-	props: { width: config.screen.width, height: 64,
-		position: { x: 0, y: config.screen.height/2 + 100 + 64 },
+	props: { width: config.screen.width, height: 32,
+		position: { x: 0, y: config.screen.height/2 + 140 + 32 },
 		tilePosition: { x: 0, y: 0 },
 		zOrder: 1,
 	},
@@ -40,8 +53,8 @@ const initFloor02 = tilingSprite({
 
 const initFloor03 = tilingSprite({
 	texture: [ spritesheet, 'ground-08.png' ],
-	props: { width: config.screen.width, height: 64,
-		position: { x: 0, y: config.screen.height/2 + 100 + 128 },
+	props: { width: config.screen.width, height: 32,
+		position: { x: 0, y: config.screen.height/2 + 140 + 64 },
 		tilePosition: { x: 0, y: 0 },
 		zOrder: 1,
 	},

@@ -1,11 +1,18 @@
-import { backgroundReducer, floorReducer } from './background'
+import {
+	backgroundReducer,
+	floorReducer,
+	moonReducer,
+} from './background'
 import { elisaReducer } from './elisa'
+import { alienReducer } from './alien'
 
 
 const reducers = [
 	backgroundReducer,
+	moonReducer,
 	floorReducer,
 	elisaReducer,
+	//alienReducer,
 ]
 
 const gameStateReducer = (state, input) =>
