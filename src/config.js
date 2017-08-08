@@ -10,6 +10,7 @@ export const keys = {
 	up: 38,
 	right: 39,
 	down: 40,
+	space: 32,
 }
 
 export const spritesheet = 'src/assets/sprites.json'

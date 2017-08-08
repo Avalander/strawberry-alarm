@@ -17,21 +17,33 @@ const onProgress = (loader, resource) => console.log(`Loading... ${loader.progre
 
 const getTexture = ([ spritesheet, id ]) => loader.resources[spritesheet].textures[id]
 
+const spriteProps = [
+	'zOrder',
+	'rotation',
+	'buttonMode',
+	'loop',
+	'visible',
+]
 const updateSprite = (sprite, data) => {
 	if (data.position) sprite.position.set(data.position.x, data.position.y)
 	if (data.hasOwnProperty('anchor')) sprite.anchor.set(data.anchor)
-	if (data.hasOwnProperty('rotation')) sprite.rotation = data.rotation
-	if (data.hasOwnProperty('buttonMode')) sprite.buttonMode = data.buttonMode
 	if (data.hasOwnProperty('tilePosition')) {
 		sprite.tilePosition.x = data.tilePosition.x
 		sprite.tilePosition.y = data.tilePosition.y
 	}
-	if (data.hasOwnProperty('zOrder')) sprite.zOrder = data.zOrder
+	spriteProps.forEach(prop => {
+		if (data.hasOwnProperty(prop)) sprite[prop] = data[prop]
+	})
 	return sprite
 }
 
-const createSprite = (data) => {
-	return new Sprite(getTexture(data.texture))
+const updateAnimation = (sprite, play, animation$) => {
+	if (!play) return
+	sprite.play()
+	sprite.onLoop = () => {
+		sprite.stop()
+		animation$.shamefullySendNext(play)
+	}
 }
 
 const create = {
@@ -39,7 +51,7 @@ const create = {
 	'animatedSprite': ({ frames, props }) => {
 		const sprite = new AnimatedSprite(frames.map(getTexture))
 		sprite.animationSpeed = props.animationSpeed || 1
-		sprite.play()
+		sprite.gotoAndPlay(0)
 		return sprite
 	},
 	'tilingSprite': ({ texture, props }) => new TilingSprite(getTexture(texture), props.width, props.height),
@@ -69,9 +81,8 @@ const updateInteraction = (sprite, data, interaction$) => {
 	}
 }
 
-const Main = (app, sprites$, interaction$) => () => {
+const Main = (app, sprites$, interaction$, animation$) => () => {
 	const spritesLookup = {}
-	const hidden = new Set()
 
 	sprites$.addListener({
 		next: ({ action, sprites }) => {
@@ -88,14 +99,7 @@ const Main = (app, sprites$, interaction$) => () => {
 				}
 				updateSprite(sprite, data.props)
 				updateInteraction(sprite, data.props, interaction$)
-				if (data.props.hide) {
-					app.stage.removeChild(sprite)
-					hidden.add(sprite)
-				}
-				else if (hidden.has(sprite)) {
-					hidden.delete(sprite)
-					app.stage.addChild(sprite)
-				}
+				updateAnimation(sprite, data.play, animation$)
 			})
 		}
 	})
@@ -109,14 +113,16 @@ export default function makePIXIDriver(root, { resources=[], screenSize }) {
 		document.querySelector(root).appendChild(app.view)
 
 		const interaction$ = xs.create()
+		const animation$ = xs.create()
 		
 		resources.forEach(r => loader.add(r))
 		loader.on('progress', onProgress)
-			.load(Main(app, sprites$, interaction$))
+			.load(Main(app, sprites$, interaction$, animation$))
 
 		return {
 			tick$: TimeSource(app),
 			interaction$,
+			animation$,
 		}
 	}
 }

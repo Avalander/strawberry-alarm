@@ -36,7 +36,7 @@ const inputHandler = () => {
 	return keyboard$
 }
 
-export default function Game({ DOM }) {
+export default function Game({ PIXI }) {
 	const gameOver$ = xs.never()
 
 	const instructionsText = `Aliens are invading your castle. Go and fight them.
@@ -45,9 +45,23 @@ export default function Game({ DOM }) {
 		.map(i => instructionsText.substring(0, i).split('\n'))
 		.map(text => div('.column', text.map(x => span(x))))
 		
-	const keyboard$ = inputHandler()
+	const keyboard$ = inputHandler().map(x => ({ type: 'KEYBOARD', value: x }))
+	const animation$ = PIXI.animation$.map(x => ({ type: 'ANIMATION', value: x }))
+	const action$ = xs.merge(keyboard$, animation$)
+		.fold((acc, { type, value }) => {
+			switch (type) {
+				case 'ANIMATION':
+					if (value === 'elisa-attack') return 'idle'
+					break
+				case 'KEYBOARD':
+					if (acc === 'attack') return acc
+					if (value[keys.space]) return 'attack'
+					if (value[keys.right]) return 'move'
+					return 'idle'
+			}
+		}, 'idle')
 
-	const state$ = xs.combine(keyboard$, xs.periodic(100))
+	const state$ = xs.combine(action$, xs.periodic(100))
 		.fold(gameStateReducer, {})
 		.map(x => draw(Object.values(x)))
 	
