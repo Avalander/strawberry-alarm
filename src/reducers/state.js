@@ -42,7 +42,7 @@ const actionHandlers = {
 	},
 	'KEYBOARD': (value, state) => {
 		if (state.current === playerStates.attacking || state.current === playerStates.jumping) {
-			state.resumeTo = keyToState(value) 
+			state.resumeTo = value[keys.right] ? playerStates.moving : playerStates.idle
 		}
 		else {
 			state.current = keyToState(value)
