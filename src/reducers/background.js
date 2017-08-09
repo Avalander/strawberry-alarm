@@ -57,8 +57,8 @@ const initFloor03 = tilingSprite({
 })
 
 export const floorReducer = ({ floor_01=initFloor01, floor_02=initFloor02, floor_03=initFloor03 }, [{ player }]) => {
-	floor_01.props.tilePosition.x = 50 -player.x
-	floor_02.props.tilePosition.x = 50 -player.x
-	floor_03.props.tilePosition.x = 50 -player.x
+	floor_01.props.tilePosition.x = 50 - player.x 
+	floor_02.props.tilePosition.x = 50 - player.x
+	floor_03.props.tilePosition.x = 50 - player.x
 	return { floor_01, floor_02, floor_03 }
 }

@@ -13,32 +13,34 @@ const collision = (a, b) => {
 		const hx = h * dx
 
 		if (wy > hx) {
-			return (wy > -hx) ? 'top' : 'left'
+			return (wy > -hx) ? 'bottom' : 'right'
 		}
-		return (wy > -hx) ? 'right' : 'bottom'
+		return (wy > -hx) ? 'left' : 'top'
 	}
 	return undefined
 }
 
-const correctPosition = (gameObject, side) => {
+const correctPosition = (gameObject, side, dt) => {
 	if (side === 'top' || side === 'bottom') {
-		gameObject.y -= gameObject.speed.y
+		gameObject.y -= gameObject.speed.y * dt
+		gameObject.speed.y = 0
 	}
 	if (side === 'left' || side === 'right') {
-		gameObject.x -= gameObject.speed.x
+		gameObject.x -= gameObject.speed.x * dt
+		gameObject.speed.x = 0
 	}
 	return gameObject
 }
 
 export const updateCollisions = update => {
-	const [ state ] = update
+	const [ state, dt ] = update
 	const { player } = state
 	const gameObjects = Object.values(state)
 		.filter(x => x !== player)
 		.filter(x => x.hitBox)
 	gameObjects.forEach(x => {
 		const c = collision(player, x)
-		correctPosition(player, c)
+		correctPosition(player, c, dt)
 	})
 	return update
 }

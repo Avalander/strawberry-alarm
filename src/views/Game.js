@@ -15,7 +15,8 @@ import {
 import config, { keys } from 'config'
 import spritesReducer from 'reducers'
 import {
-	stateReducer,
+	playerStateReducer,
+	gameStateReducer,
 	updateSpeed,
 	updatePosition,
 } from 'reducers/state'
@@ -55,10 +56,12 @@ export default function Game({ PIXI }) {
 	const keyboard$ = inputHandler().map(x => ({ type: 'KEYBOARD', value: x }))
 	const animation$ = PIXI.animation$.map(x => ({ type: 'ANIMATION', value: x }))
 	const state$ = xs.merge(keyboard$, animation$)
-		.fold(stateReducer)
+		.fold(playerStateReducer)
 		.filter(x => x !== undefined)
 
-	const sprites$ = xs.combine(state$, xs.periodic(100))
+	const sprites$ = xs.combine(state$, PIXI.tick$)
+		.fold(gameStateReducer)
+		.filter(x => x !== undefined)
 		.map(updateSpeed)
 		.map(updatePosition)
 		.map(updateCollisions)
