@@ -36,10 +36,18 @@ const initElisaAttacking = animatedSprite({
 	}
 })
 
+const updatePosition = (sprite, player) => {
+	sprite.props.position.y = player.y
+	return sprite
+}
+
 export const elisaReducer = ({ elisa_running=initElisaRunning, elisa_idle=initElisaIdle, elisa_attacking=initElisaAttacking }, [{ player }]) => {
 	elisa_attacking.play = player.state === playerStates.attacking && player.previousState !== player.state ? 'elisa-attack' : undefined
 	elisa_attacking.props.visible = player.state === playerStates.attacking
 	elisa_running.props.visible = player.state === playerStates.moving
 	elisa_idle.props.visible = player.state === playerStates.idle
+	updatePosition(elisa_attacking, player)
+	updatePosition(elisa_running, player)
+	updatePosition(elisa_idle, player)
 	return { elisa_idle, elisa_running, elisa_attacking }
 }

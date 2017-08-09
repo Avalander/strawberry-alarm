@@ -18,10 +18,12 @@ const initState = {
 	floor: {
 		hitBox: {
 			x: 0,
-			y: 460,
+			y: 0,
 			width: 3000,
 			height: 96,
 		},
+		x: 0,
+		y: 460,
 		static: true,
 	}
 }

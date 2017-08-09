@@ -1,6 +1,6 @@
 const center = (x, l) => x + l/2
-const centerX = (box) => center(box.x + box.hitBox.x, box.width)
-const centerY = (box) => center(box.y + box.hitBox.y, box.height)
+const centerX = (box) => center(box.x + box.hitBox.x, box.hitBox.width)
+const centerY = (box) => center(box.y + box.hitBox.y, box.hitBox.height)
 
 const collision = (a, b) => {
 	const w = 0.5 * (a.hitBox.width + b.hitBox.width)
@@ -30,8 +30,9 @@ const correctPosition = (gameObject, side) => {
 	return gameObject
 }
 
-export const updateCollisions = state => {
-	const [{ player }] = state
+export const updateCollisions = update => {
+	const [ state ] = update
+	const { player } = state
 	const gameObjects = Object.values(state)
 		.filter(x => x !== player)
 		.filter(x => x.hitBox)
@@ -39,7 +40,7 @@ export const updateCollisions = state => {
 		const c = collision(player, x)
 		correctPosition(player, c)
 	})
-	return state
+	return update
 }
 
 
