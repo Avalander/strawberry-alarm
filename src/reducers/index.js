@@ -15,8 +15,8 @@ const reducers = [
 	//alienReducer,
 ]
 
-const gameStateReducer = (state, input) =>
+const spritesReducer = (state, input) =>
 	reducers.reduce((acc, fn) => Object.assign(acc, fn(acc, input)), state)
 
-export default gameStateReducer
+export default spritesReducer
 		

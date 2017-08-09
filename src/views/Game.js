@@ -13,7 +13,7 @@ import {
 } from 'drivers/pixi-driver'
 
 import config, { keys } from 'config'
-import gameStateReducer from 'reducers'
+import spritesReducer from 'reducers'
 import {
 	stateReducer,
 	updateSpeed,
@@ -62,7 +62,7 @@ export default function Game({ PIXI }) {
 		.map(updateSpeed)
 		.map(updatePosition)
 		.map(updateCollisions)
-		.fold(gameStateReducer, {})
+		.fold(spritesReducer, {})
 		.map(x => draw(Object.values(x)))
 	
 	
