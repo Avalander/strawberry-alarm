@@ -14,3 +14,11 @@ export const keys = {
 }
 
 export const spritesheet = 'src/assets/sprites.json'
+
+export const playerStates = {
+	attacking: 'attacking',
+	falling: 'falling',
+	idle: 'idle',
+	jumping: 'jumping',
+	moving: 'moving',
+}

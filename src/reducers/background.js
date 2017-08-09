@@ -14,10 +14,8 @@ const initBackground = tilingSprite({
 	},
 })
 
-export const backgroundReducer = ({ background=initBackground }, [ action, dt ]) => {
-	if (action === 'move') {
-		background.props.tilePosition.x -= 1
-	}
+export const backgroundReducer = ({ background=initBackground }, [{ player }]) => {
+	background.props.tilePosition.x = 50 - player.x * 0.05
 	return { background }
 }
 
@@ -26,10 +24,8 @@ const initMoon = sprite({
 	props: { position: { x: 400, y: 0 }, zOrder: 1 },
 })
 
-export const moonReducer = ({ moon=initMoon }, [ action, dt ]) => {
-	if (action === 'move') {
-		moon.props.x -= 0.1
-	}
+export const moonReducer = ({ moon=initMoon }, [{ player }]) => {
+	moon.props.position.x = 400 - (player.x - 50) * 0.005
 	return { moon }
 }
 
@@ -60,11 +56,9 @@ const initFloor03 = tilingSprite({
 	},
 })
 
-export const floorReducer = ({ floor_01=initFloor01, floor_02=initFloor02, floor_03=initFloor03 }, [ action, dt ]) => {
-	if (action === 'move') {
-		floor_01.props.tilePosition.x -= 20
-		floor_02.props.tilePosition.x -= 20
-		floor_03.props.tilePosition.x -= 20
-	}
+export const floorReducer = ({ floor_01=initFloor01, floor_02=initFloor02, floor_03=initFloor03 }, [{ player }]) => {
+	floor_01.props.tilePosition.x = 50 -player.x
+	floor_02.props.tilePosition.x = 50 -player.x
+	floor_03.props.tilePosition.x = 50 -player.x
 	return { floor_01, floor_02, floor_03 }
 }

@@ -14,6 +14,12 @@ import {
 
 import config, { keys } from 'config'
 import gameStateReducer from 'reducers'
+import {
+	stateReducer,
+	updateSpeed,
+	updatePosition,
+} from 'reducers/state'
+import { updateCollisions } from 'collision'
 
 
 const recognisedKeys = Object.values(keys)
@@ -36,6 +42,7 @@ const inputHandler = () => {
 	return keyboard$
 }
 
+
 export default function Game({ PIXI }) {
 	const gameOver$ = xs.never()
 
@@ -47,28 +54,21 @@ export default function Game({ PIXI }) {
 		
 	const keyboard$ = inputHandler().map(x => ({ type: 'KEYBOARD', value: x }))
 	const animation$ = PIXI.animation$.map(x => ({ type: 'ANIMATION', value: x }))
-	const action$ = xs.merge(keyboard$, animation$)
-		.fold((acc, { type, value }) => {
-			switch (type) {
-				case 'ANIMATION':
-					if (value === 'elisa-attack') return 'idle'
-					break
-				case 'KEYBOARD':
-					if (acc === 'attack') return acc
-					if (value[keys.space]) return 'attack'
-					if (value[keys.right]) return 'move'
-					return 'idle'
-			}
-		}, 'idle')
+	const state$ = xs.merge(keyboard$, animation$)
+		.fold(stateReducer)
+		.filter(x => x !== undefined)
 
-	const state$ = xs.combine(action$, xs.periodic(100))
+	const sprites$ = xs.combine(state$, xs.periodic(100))
+		.map(updateSpeed)
+		.map(updatePosition)
+		.map(updateCollisions)
 		.fold(gameStateReducer, {})
 		.map(x => draw(Object.values(x)))
 	
 	
 	return {
 		DOM: vtree$,
-		PIXI: state$,
+		PIXI: sprites$,
 		router: gameOver$,
 	}
 }

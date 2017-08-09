@@ -3,7 +3,7 @@ import {
 	animatedSprite,
 } from 'drivers/pixi-driver'
 
-import config, { spritesheet } from 'config'
+import config, { spritesheet, playerStates } from 'config'
 
 import R from 'ramda'
 
@@ -36,10 +36,10 @@ const initElisaAttacking = animatedSprite({
 	}
 })
 
-export const elisaReducer = ({ elisa_running=initElisaRunning, elisa_idle=initElisaIdle, elisa_attacking=initElisaAttacking }, [ action, dt ]) => {
-	elisa_attacking.play = action === 'attack' && !elisa_attacking.props.visible ? 'elisa-attack' : undefined
-	elisa_attacking.props.visible = action === 'attack'
-	elisa_running.props.visible = action === 'move'
-	elisa_idle.props.visible = action === 'idle'
+export const elisaReducer = ({ elisa_running=initElisaRunning, elisa_idle=initElisaIdle, elisa_attacking=initElisaAttacking }, [{ player }]) => {
+	elisa_attacking.play = player.state === playerStates.attacking && player.previousState !== player.state ? 'elisa-attack' : undefined
+	elisa_attacking.props.visible = player.state === playerStates.attacking
+	elisa_running.props.visible = player.state === playerStates.moving
+	elisa_idle.props.visible = player.state === playerStates.idle
 	return { elisa_idle, elisa_running, elisa_attacking }
 }
