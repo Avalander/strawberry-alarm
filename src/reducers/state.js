@@ -28,21 +28,39 @@ const initState = {
 	}
 }
 
+const keyToState = value => {
+	if (value[keys.space]) return playerStates.attacking
+	if (value[keys.up]) return playerStates.jumping
+	if (value[keys.right]) return playerStates.moving
+	return playerStates.idle
+}
+
 const actionHandlers = {
-	'ANIMATION': (value, state) => playerStates.idle,
+	'ANIMATION': (value, state) => {
+		state.current = state.resumeTo
+		return state
+	},
 	'KEYBOARD': (value, state) => {
-		if (state === playerStates.attacking) return playerStates.attacking
-		if (state === playerStates.jumping) return playerStates.jumping
-		if (value[keys.space]) return playerStates.attacking
-		if (value[keys.up]) return playerStates.jumping
-		if (value[keys.right]) return playerStates.moving
-		return playerStates.idle
+		if (state.current === playerStates.attacking || state.current === playerStates.jumping) {
+			state.resumeTo = keyToState(value) 
+		}
+		else {
+			state.current = keyToState(value)
+		}
+		return state
 	},
 }
 
-export const playerStateReducer = (state=playerStates.idle, { type, value }) => {
+const initPlayerState = {
+	resumeTo: playerStates.idle,
+	current: playerStates.idle,
+}
+
+export const playerStateReducer = (state=initPlayerState, { type, value }) => {
 	return actionHandlers[type](value, state)
 }
+
+export const playerStateMapper = state => state.current
 
 export const gameStateReducer = (state=[initState], [ playerState, dt]) => {
 	const [{ player }] = state

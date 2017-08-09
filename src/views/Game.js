@@ -16,6 +16,7 @@ import config, { keys } from 'config'
 import spritesReducer from 'reducers'
 import {
 	playerStateReducer,
+	playerStateMapper,
 	gameStateReducer,
 	updateSpeed,
 	updatePosition,
@@ -58,6 +59,7 @@ export default function Game({ PIXI }) {
 	const state$ = xs.merge(keyboard$, animation$)
 		.fold(playerStateReducer)
 		.filter(x => x !== undefined)
+		.map(playerStateMapper)
 
 	const sprites$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
