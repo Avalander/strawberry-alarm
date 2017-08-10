@@ -27,6 +27,7 @@ $color-text: #eef;
 	display: flex;
 	flex-direction: column;
 	align-content: center;
+	justify-content: space-around;
 	width: $screen-width;
 	height: $screen-height;
 	background: $color-background;
