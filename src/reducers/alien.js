@@ -18,7 +18,8 @@ const initAlien = () => animatedSprite({
 		position: { x: 0, y: 0 },
 		animationSpeed: 0.1,
 		zOrder
-	}
+	},
+	start: true,
 })
 
 const initAlienDying = ()  => animatedSprite({

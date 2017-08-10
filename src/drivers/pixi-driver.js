@@ -48,10 +48,12 @@ const updateAnimation = (sprite, play, animation$) => {
 
 const create = {
 	'sprite': ({ texture }) => new Sprite(getTexture(texture)),
-	'animatedSprite': ({ frames, props }) => {
+	'animatedSprite': ({ frames, props, start }) => {
 		const sprite = new AnimatedSprite(frames.map(getTexture))
 		sprite.animationSpeed = props.animationSpeed || 1
-		sprite.gotoAndPlay(0)
+		if (start) {
+			sprite.play()
+		}
 		return sprite
 	},
 	'tilingSprite': ({ texture, props }) => new TilingSprite(getTexture(texture), props.width, props.height),
@@ -132,4 +134,4 @@ export const clear = () => ({ action: 'clear' })
 
 export const sprite = ({ key=Symbol(), texture, props }) => ({ key, type: 'sprite', texture, props })
 export const tilingSprite = ({ key=Symbol(), texture, props }) => ({ key, type: 'tilingSprite', texture, props })
-export const animatedSprite = ({ key=Symbol(), frames, props }) => ({ key, type: 'animatedSprite', frames, props })
+export const animatedSprite = ({ key=Symbol(), frames, props, start }) => ({ key, type: 'animatedSprite', frames, props, start })

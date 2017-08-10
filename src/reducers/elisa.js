@@ -24,6 +24,7 @@ const initElisaRunning = animatedSprite({
 		visible: false,
 		zOrder,
 	},
+	start: true,
 })
 
 const initElisaAttacking = animatedSprite({
