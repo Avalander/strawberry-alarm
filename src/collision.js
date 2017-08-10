@@ -1,3 +1,6 @@
+import { playerStates, alienStates } from 'config'
+
+
 const center = (x, l) => x + l/2
 const centerX = (box) => center(box.x + box.hitBox.x, box.hitBox.width)
 const centerY = (box) => center(box.y + box.hitBox.y, box.hitBox.height)
@@ -13,9 +16,9 @@ const collision = (a, b) => {
 		const hx = h * dx
 
 		if (wy > hx) {
-			return (wy > -hx) ? 'bottom' : 'right'
+			return (wy > -hx) ? 'top' : 'left'
 		}
-		return (wy > -hx) ? 'left' : 'top'
+		return (wy > -hx) ? 'right' : 'bottom'
 	}
 	return undefined
 }
@@ -32,19 +35,43 @@ const correctPosition = (gameObject, side, dt) => {
 	return gameObject
 }
 
+const attacks = (alien, playerAttack) => {
+	if (collision(alien, playerAttack)) {
+		alien.speed.x = 2
+		alien.state = alienStates.dying
+		alien.stateChanged = true
+	}
+}
+
+const updateAlienCollisions = (aliens, player, playerAttack, gameObjects, dt) => {
+	const aliensAlive = aliens
+		.filter(x => x.state !== alienStates.dying)
+		.filter(x => x.visible)
+	aliensAlive.forEach(a => gameObjects.forEach(x => {
+		const c = collision(a, x)
+		correctPosition(a, c, dt)
+	}))
+	if (player.state !== playerStates.attacking && player.previousState === playerStates.attacking ) {
+		aliensAlive.forEach(x => attacks(x, playerAttack))
+	}
+}
+
 export const updateCollisions = update => {
 	const [ state, dt ] = update
-	const { player } = state
+	const { player, playerAttack, aliens } = state
 	const gameObjects = Object.values(state)
 		.filter(x => x !== player)
 		.filter(x => x.hitBox)
+		.filter(x => x.static)
 	gameObjects.forEach(x => {
 		const c = collision(player, x)
 		correctPosition(player, c, dt)
 	})
+
+	updateAlienCollisions(aliens, player, playerAttack, gameObjects, dt)
+	
 	return update
 }
-
 
 /*
 float w = 0.5 * (A.width() + B.width());

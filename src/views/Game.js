@@ -20,6 +20,8 @@ import {
 	gameStateReducer,
 	updateSpeed,
 	updatePosition,
+	updateVisible,
+	updateAliens,
 } from 'reducers/state'
 import { updateCollisions } from 'collision'
 
@@ -64,11 +66,19 @@ export default function Game({ PIXI }) {
 	const sprites$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
 		.filter(x => x !== undefined)
+		.map(updateVisible)
 		.map(updateSpeed)
 		.map(updatePosition)
+		.map(updateAliens)
 		.map(updateCollisions)
 		.fold(spritesReducer, {})
-		.map(x => draw(Object.values(x)))
+		.map(x => draw(Object.values(x).reduce((acc, x) => {
+				if (x instanceof Array) {
+					return acc.concat(x)
+				}
+				acc.push(x)
+				return acc
+			}, [])))
 	
 	
 	return {

@@ -1,8 +1,6 @@
-export default {
-	screen: {
-		width: 1137,
-		height: 640,
-	}
+export const screen = {
+	width: 1137,
+	height: 640,
 }
 
 export const keys = {
@@ -21,4 +19,24 @@ export const playerStates = {
 	idle: 'idle',
 	jumping: 'jumping',
 	moving: 'moving',
+}
+
+export const alien = {
+	speed: {
+		moving: -0.5,
+		dying: 2,
+	},
+}
+
+export const alienStates = {
+	moving: 'moving',
+	dying: 'dying',
+}
+
+export default {
+	screen,
+	keys,
+	spritesheet,
+	playerStates,
+	alien,
 }

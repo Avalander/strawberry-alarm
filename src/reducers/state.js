@@ -1,4 +1,5 @@
-import { keys, playerStates } from 'config'
+import { alien as alienPrefab } from 'prefabs'
+import { screen, keys, playerStates, alienStates, alien as alienConfig } from 'config'
 
 
 const initState = {
@@ -15,17 +16,25 @@ const initState = {
 			height: 78,
 		},
 	},
-	floor: {
+	playerAttack: {
 		hitBox: {
-			x: 0,
-			y: 0,
-			width: 3000,
-			height: 96,
+			x: 70,
+			y: 31,
+			width: 50,
+			height: 40,
 		},
+	},
+	floor: {
+		hitBox: { x: 0, y: 0, width: 3000, height: 96, },
 		x: 0,
 		y: 460,
 		static: true,
-	}
+	},
+	aliens: [
+		Object.assign({ x: 900, y: 356 }, alienPrefab()),
+		Object.assign({ x: 1200, y: 356 }, alienPrefab()),
+		Object.assign({ x: 1500, y: 356 }, alienPrefab()),
+	],
 }
 
 const keyToState = value => {
@@ -37,7 +46,9 @@ const keyToState = value => {
 
 const actionHandlers = {
 	'ANIMATION': (value, state) => {
-		state.current = state.resumeTo
+		if (value.startsWith('elisa')) {
+			state.current = state.resumeTo
+		}
 		return state
 	},
 	'KEYBOARD': (value, state) => {
@@ -90,9 +101,52 @@ export const updateSpeed = state => {
 }
 
 export const updatePosition = state => {
-	const [{ player, floor }, dt] = state
+	const [{ player, playerAttack, floor }, dt] = state
 	player.x += player.speed.x * dt
 	player.y += player.speed.y * dt
-	floor.x = player.x - 50
+	playerAttack.x = player.x
+	playerAttack.y = player.y
+	floor.x = player.x - 100
+	return state
+}
+
+export const updateVisible = state => {
+	const [{ aliens, player }] = state
+	aliens.forEach(x => {
+		x.visible = x.x < player.x + screen.width && x.x > player.x - 158 && x.y < screen.height
+	})
+	return state
+}
+
+export const updateAliens = state => {
+	const [{ aliens }] = state
+	aliens
+		.filter(x => x.visible)
+		.map(x => {
+			x.stateChanged = false
+			return x
+		})
+		.map(x => {
+			switch (x.state) {
+				case alienStates.moving:
+					x.speed.x = alienConfig.speed.moving
+					break
+				case alienStates.dying:
+					x.speed.x = alienConfig.speed.dying
+					break
+				default:
+					x.speed.x = 0
+			}
+			x.speed.y += 0.5
+			if (x.speed.y > 6) {
+				x.speed.y = 6
+			} 
+			return x
+		})
+		.map(x => {
+			x.x += x.speed.x
+			x.y += x.speed.y
+			return x
+		})
 	return state
 }

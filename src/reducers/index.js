@@ -4,7 +4,10 @@ import {
 	moonReducer,
 } from './background'
 import { elisaReducer } from './elisa'
-import { alienReducer } from './alien'
+import {
+	alienReducer,
+	alienDyingReducer,
+ } from './alien'
 
 
 const reducers = [
@@ -12,7 +15,8 @@ const reducers = [
 	moonReducer,
 	floorReducer,
 	elisaReducer,
-	//alienReducer,
+	alienReducer,
+	alienDyingReducer,
 ]
 
 const spritesReducer = (state, input) =>
