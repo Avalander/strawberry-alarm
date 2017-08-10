@@ -34,6 +34,7 @@ const initState = {
 		Object.assign({ x: 900, y: 356 }, alienPrefab()),
 		Object.assign({ x: 1200, y: 356 }, alienPrefab()),
 		Object.assign({ x: 1500, y: 356 }, alienPrefab()),
+		Object.assign({ x: 1800, y: 356 }, alienPrefab()),
 	],
 }
 
