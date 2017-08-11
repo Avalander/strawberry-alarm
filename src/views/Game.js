@@ -74,10 +74,6 @@ export default function Game({ PIXI }) {
 	
 	const sprites$ = spritesAfterCollisions$
 		.fold(spritesReducer, {})
-		.map(x => {
-			console.log(x)
-			return x
-		})
 		.filter(x => x.moon)
 		.map(spritesToDraw)
 	
