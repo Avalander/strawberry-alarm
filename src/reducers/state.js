@@ -1,5 +1,7 @@
-import { alien as alienPrefab } from 'prefabs'
+import prefabs from 'prefabs'
 import { screen, keys, playerStates, alienStates, alien as alienConfig } from 'config'
+
+import level from 'levels/level-01.json'
 
 
 const initState = {
@@ -20,7 +22,7 @@ const initState = {
 		hitBox: {
 			x: 70,
 			y: 31,
-			width: 50,
+			width: 70,
 			height: 40,
 		},
 	},
@@ -31,11 +33,12 @@ const initState = {
 		static: true,
 	},
 	aliens: [
-		Object.assign({ x: 900, y: 356 }, alienPrefab()),
-		Object.assign({ x: 1200, y: 356 }, alienPrefab()),
-		Object.assign({ x: 1500, y: 356 }, alienPrefab()),
-		Object.assign({ x: 1800, y: 356 }, alienPrefab()),
+		Object.assign({ x: 900, y: 356 }, prefabs.alien()),
+		Object.assign({ x: 1200, y: 356 }, prefabs.alien()),
+		Object.assign({ x: 1500, y: 356 }, prefabs.alien()),
+		Object.assign({ x: 1800, y: 356 }, prefabs.alien()),
 	],
+	terrain: level.terrain.map(x => Object.assign(x, prefabs[x.prefab]())),
 }
 
 const keyToState = value => {
@@ -111,9 +114,19 @@ export const updatePosition = state => {
 	return state
 }
 
+/*
 export const updateVisible = state => {
 	const [{ aliens, player }] = state
 	aliens.forEach(x => {
+		x.visible = x.x < player.x + screen.width && x.x > player.x - 158 && x.y < screen.height
+	})
+	return state
+}
+*/
+
+export const updateVisible = keyPath => state => {
+	const [{ player }] = state
+	state[0][keyPath].forEach(x => {
 		x.visible = x.x < player.x + screen.width && x.x > player.x - 158 && x.y < screen.height
 	})
 	return state

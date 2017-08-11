@@ -33,6 +33,10 @@ module.exports = (baseDir, folders) => ({
 				}
 			}
 		}, {
+			test: /\.json/,
+			exclude: /assets/,
+			use: 'json-loader'
+		}, {
 			test: /\.(otf|ttf|woff|woff2)/,
 			use: 'file-loader?name=fonts/[name].[ext]'
 		}]

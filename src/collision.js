@@ -23,8 +23,15 @@ const collision = (a, b) => {
 	return undefined
 }
 
+const sidedCollision = (gameObject, collision) => {
+	if (collision && gameObject.hasOwnProperty('collisions')) {
+		return gameObject.collisions[collision] ? collision : undefined
+	}
+	return collision
+}
+
 const correctPosition = (gameObject, side, dt) => {
-	if (side === 'top' || side === 'bottom') {
+	if ((side === 'top' && gameObject.speed.y > 0) || (side === 'bottom' && gameObject.speed.y < 0)) {
 		gameObject.y -= gameObject.speed.y * dt
 		gameObject.speed.y = 0
 	}
@@ -48,7 +55,7 @@ const updateAlienCollisions = (aliens, player, playerAttack, gameObjects, dt) =>
 		.filter(x => x.state !== alienStates.dying)
 		.filter(x => x.visible)
 	aliensAlive.forEach(a => gameObjects.forEach(x => {
-		const c = collision(a, x)
+		const c = sidedCollision(x, collision(x, a))
 		correctPosition(a, c, dt)
 	}))
 	if (player.state !== playerStates.attacking && player.previousState === playerStates.attacking ) {
@@ -59,12 +66,10 @@ const updateAlienCollisions = (aliens, player, playerAttack, gameObjects, dt) =>
 export const updateCollisions = update => {
 	const [ state, dt ] = update
 	const { player, playerAttack, aliens } = state
-	const gameObjects = Object.values(state)
-		.filter(x => x !== player)
-		.filter(x => x.hitBox)
-		.filter(x => x.static)
+	const gameObjects = [...state.terrain, state.floor]
+	
 	gameObjects.forEach(x => {
-		const c = collision(player, x)
+		const c = sidedCollision(x, collision(x, player))
 		correctPosition(player, c, dt)
 	})
 

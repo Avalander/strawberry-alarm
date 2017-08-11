@@ -52,7 +52,7 @@ export default function Game({ PIXI }) {
 
 	const instructionsText = `Aliens are invading your castle. Go and fight them.
 	Use arrow keys to move and space to attack.`
-	const vtree$ = xs.periodic(100).take(instructionsText.length + 1)
+	const vtree$ = xs.periodic(50).take(instructionsText.length + 1)
 		.map(i => instructionsText.substring(0, i).split('\n'))
 		.map(text => div('.column', text.map(x => span(x))))
 		
@@ -66,12 +66,29 @@ export default function Game({ PIXI }) {
 	const sprites$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
 		.filter(x => x !== undefined)
-		.map(updateVisible)
+		.map(updateVisible('aliens'))
+		.map(updateVisible('terrain'))
 		.map(updateSpeed)
 		.map(updatePosition)
 		.map(updateAliens)
 		.map(updateCollisions)
 		.fold(spritesReducer, {})
+		.filter(x => x.moon)
+		.map(x => draw([
+			x.background,
+			x.moon,
+			x.floor_01,
+			x.floor_02,
+			x.floor_03,
+			...x.terrain_tiles,
+			...x.aliens_dying,
+			...x.aliens,
+			x.elisa_idle,
+			x.elisa_running,
+			x.elisa_jumping,
+			x.elisa_attacking,
+		]))
+		/*
 		.map(x => draw(Object.values(x).reduce((acc, x) => {
 				if (x instanceof Array) {
 					return acc.concat(x)
@@ -79,6 +96,7 @@ export default function Game({ PIXI }) {
 				acc.push(x)
 				return acc
 			}, [])))
+		*/
 	
 	
 	return {

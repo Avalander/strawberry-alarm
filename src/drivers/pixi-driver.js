@@ -18,7 +18,6 @@ const onProgress = (loader, resource) => console.log(`Loading... ${loader.progre
 const getTexture = ([ spritesheet, id ]) => loader.resources[spritesheet].textures[id]
 
 const spriteProps = [
-	'zOrder',
 	'rotation',
 	'buttonMode',
 	'loop',

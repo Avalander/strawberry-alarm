@@ -8,12 +8,11 @@ import config, { spritesheet, playerStates } from 'config'
 import R from 'ramda'
 
 
-const zOrder = 2
 const y = config.screen.height/2 + 40
 
 const initElisaIdle = sprite({
 	texture: [ spritesheet, 'elisa-idle.png' ],
-	props: { position: { x: 50, y }, zOrder },
+	props: { position: { x: 50, y }},
 })
 
 const initElisaRunning = animatedSprite({
@@ -22,7 +21,6 @@ const initElisaRunning = animatedSprite({
 		position: { x: 50, y },
 		animationSpeed: 0.2,
 		visible: false,
-		zOrder,
 	},
 	start: true,
 })
@@ -33,7 +31,6 @@ const initElisaAttacking = animatedSprite({
 		position: { x: 50, y },
 		animationSpeed: 0.2,
 		visible: false,
-		zOrder,
 	}
 })
 
@@ -43,7 +40,6 @@ const initElisaJumping = animatedSprite({
 		position: { x: 50, y },
 		animationSpeed: 0.1,
 		visible: false,
-		zOrder,
 	}
 })
 

@@ -8,7 +8,6 @@ import { spritesheet, alienStates } from 'config'
 import R from 'ramda'
 
 
-const zOrder = 2
 const frames = R.range(1, 5).map(i => ([ spritesheet, `alien-walking-0${i}.png` ]))
 const dyingFrames = R.range(1, 5).map(i => ([ spritesheet, `alien-die-0${i}.png` ]))
 
@@ -17,7 +16,6 @@ const initAlien = () => animatedSprite({
 	props: {
 		position: { x: 0, y: 0 },
 		animationSpeed: 0.1,
-		zOrder
 	},
 	start: true,
 })
@@ -27,7 +25,6 @@ const initAlienDying = ()  => animatedSprite({
 	props: {
 		position: { x: 0, y: 0 },
 		animationSpeed: 0.1,
-		zOrder,
 		loop: false,
 	}
 })

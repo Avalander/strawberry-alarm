@@ -33,10 +33,17 @@ export const alienStates = {
 	dying: 'dying',
 }
 
+export const terrain = {
+	tile: {
+		size: 32,
+	},
+}
+
 export default {
-	screen,
-	keys,
-	spritesheet,
-	playerStates,
 	alien,
+	keys,
+	playerStates,
+	screen,
+	spritesheet,
+	terrain,
 }

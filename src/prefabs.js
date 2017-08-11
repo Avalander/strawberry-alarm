@@ -15,3 +15,21 @@ export const alien = () => ({
 	state: alienStates.moving,
 	stateChanged: false,
 })
+
+export const tile = () => ({
+	hitBox: {
+		x: 0,
+		y: 0,
+		width: 32,
+		height: 16,
+	},
+	static: true,
+	collisions: {
+		top: true,
+	},
+})
+
+export default {
+	alien,
+	tile,
+}

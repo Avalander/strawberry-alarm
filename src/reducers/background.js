@@ -10,7 +10,6 @@ const initBackground = tilingSprite({
 	texture: [ spritesheet, 'bg-exterior.png' ],
 	props: { width: config.screen.width, height: config.screen.height,
 		tilePosition: { x: 0, y: 0 },
-		zOrder: 0,
 	},
 })
 
@@ -21,7 +20,7 @@ export const backgroundReducer = ({ background=initBackground }, [{ player }]) =
 
 const initMoon = sprite({
 	texture: [ spritesheet, 'bg-moon.png' ],
-	props: { position: { x: 400, y: 0 }, zOrder: 1 },
+	props: { position: { x: 400, y: 0 }},
 })
 
 export const moonReducer = ({ moon=initMoon }, [{ player }]) => {
@@ -34,7 +33,6 @@ const initFloor01 = tilingSprite({
 	props: { width: config.screen.width, height: 32, 
 		position: { x: 0, y: config.screen.height/2 + 140 },
 		tilePosition: { x: 0, y: 0 },
-		zOrder: 1,
 	},
 })
 
@@ -43,7 +41,6 @@ const initFloor02 = tilingSprite({
 	props: { width: config.screen.width, height: 32,
 		position: { x: 0, y: config.screen.height/2 + 140 + 32 },
 		tilePosition: { x: 0, y: 0 },
-		zOrder: 1,
 	},
 })
 
@@ -52,7 +49,6 @@ const initFloor03 = tilingSprite({
 	props: { width: config.screen.width, height: 32,
 		position: { x: 0, y: config.screen.height/2 + 140 + 64 },
 		tilePosition: { x: 0, y: 0 },
-		zOrder: 1,
 	},
 })
 

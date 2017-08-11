@@ -1,0 +1,43 @@
+{
+	"terrain": [{
+		"prefab": "tile",
+		"x": 600,
+		"y": 400,
+		"texture": "platform-01.png"
+	}, {
+		"prefab": "tile",
+		"x": 632,
+		"y": 400,
+		"texture": "platform-03.png"
+	}, {
+		"prefab": "tile",
+		"x": 696,
+		"y": 360,
+		"texture": "platform-01.png"
+	}, {
+		"prefab": "tile",
+		"x": 728,
+		"y": 360,
+		"texture": "platform-03.png"
+	}, {
+		"prefab": "tile",
+		"x": 792,
+		"y": 320,
+		"texture": "platform-01.png"
+	}, {
+		"prefab": "tile",
+		"x": 824,
+		"y": 320,
+		"texture": "platform-02.png"
+	}, {
+		"prefab": "tile",
+		"x": 856,
+		"y": 320,
+		"texture": "platform-02.png"
+	}, {
+		"prefab": "tile",
+		"x": 888,
+		"y": 320,
+		"texture": "platform-03.png"
+	}]
+}

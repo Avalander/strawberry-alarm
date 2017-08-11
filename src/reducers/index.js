@@ -7,8 +7,8 @@ import { elisaReducer } from './elisa'
 import {
 	alienReducer,
 	alienDyingReducer,
- } from './alien'
-
+} from './alien'
+import { terrainReducer } from './terrain'
 
 const reducers = [
 	backgroundReducer,
@@ -17,6 +17,7 @@ const reducers = [
 	elisaReducer,
 	alienReducer,
 	alienDyingReducer,
+	terrainReducer,
 ]
 
 const spritesReducer = (state, input) =>
