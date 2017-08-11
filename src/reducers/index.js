@@ -10,6 +10,7 @@ import {
 } from './alien'
 import { terrainReducer } from './terrain'
 
+
 const reducers = [
 	backgroundReducer,
 	moonReducer,

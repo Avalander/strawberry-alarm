@@ -22,6 +22,8 @@ import {
 	updateVisible,
 	updateAliens,
 } from 'reducers/state'
+import spritesToDraw from 'reducers/render'
+
 import { updateCollisions } from 'collision'
 
 
@@ -68,20 +70,7 @@ export default function Game({ PIXI }) {
 		.map(updateCollisions)
 		.fold(spritesReducer, {})
 		.filter(x => x.moon)
-		.map(x => draw([
-			x.background,
-			x.moon,
-			x.floor_01,
-			x.floor_02,
-			x.floor_03,
-			...x.terrain_tiles,
-			...x.aliens_dying,
-			...x.aliens,
-			x.elisa_idle,
-			x.elisa_running,
-			x.elisa_jumping,
-			x.elisa_attacking,
-		]))
+		.map(spritesToDraw)
 	
 	
 	return {
