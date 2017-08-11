@@ -8,6 +8,7 @@ const initState = {
 	player: {
 		state: playerStates.idle,
 		previousState: playerStates.idle,
+		resumeToState: playerStates.idle,
 		x: 50,
 		y: 360,
 		speed: { x: 0, y: 0 },
@@ -41,46 +42,64 @@ const initState = {
 	terrain: level.terrain.map(x => Object.assign(x, prefabs[x.prefab]())),
 }
 
-const keyToState = value => {
-	if (value[keys.space]) return playerStates.attacking
-	if (value[keys.up]) return playerStates.jumping
-	if (value[keys.right]) return playerStates.moving
-	return playerStates.idle
+const commands = {
+	attack: player => {
+		if (player.state !== playerStates.jumping) {
+			player.state = playerStates.attacking
+		}
+	},
+	move: player => {
+		if (player.state === playerStates.idle) {
+			player.state = playerStates.moving
+		}
+		player.resumeToState = playerStates.moving
+	},
+	jump: player => {
+		if (player.state !== playerStates.attacking) {
+			player.state = playerStates.jumping
+		}
+	},
+	stop: player => {
+		if (player.state === playerStates.moving) {
+			player.state = playerStates.idle
+		}
+		player.resumeToState = playerStates.idle
+	},
+	resume: player => {
+		player.state = player.resumeToState
+	},
+	none: () => {},
 }
 
 const actionHandlers = {
-	'ANIMATION': (value, state) => {
-		if (value.startsWith('elisa')) {
-			state.current = state.resumeTo
+	'ANIMATION': value => value.startsWith('elisa') ? commands.resume : commands.none,
+	'keydown': value => {
+		switch (value) {
+			case keys.space:
+				return commands.attack
+			case keys.up:
+				return commands.jump
+			case keys.right:
+				return commands.move
+			default:
+				return commands.none
 		}
-		return state
 	},
-	'KEYBOARD': (value, state) => {
-		if (state.current === playerStates.attacking || state.current === playerStates.jumping) {
-			state.resumeTo = value[keys.right] ? playerStates.moving : playerStates.idle
-		}
-		else {
-			state.current = keyToState(value)
-		}
-		return state
-	},
-}
-
-const initPlayerState = {
-	resumeTo: playerStates.idle,
-	current: playerStates.idle,
+	'keyup': value => value === keys.right ? commands.stop : commands.none
 }
 
 export const playerStateReducer = (state=initPlayerState, { type, value }) => {
 	return actionHandlers[type](value, state)
 }
 
-export const playerStateMapper = state => state.current
+export const playerStateMapper = ({ type, value }) => {
+	return actionHandlers[type](value)
+}
 
-export const gameStateReducer = (state=[initState], [ playerState, dt]) => {
+export const gameStateReducer = (state=[initState], [ command, dt]) => {
 	const [{ player }] = state
 	player.previousState = player.state
-	player.state = playerState
+	command(player)
 	state[1] = dt
 	return state
 }
@@ -98,7 +117,7 @@ export const updateSpeed = state => {
 	}
 	player.speed.y -= (player.state === playerStates.jumping && player.previousState !== player.state) ? 10 : 0
 	player.speed.y += 0.5
-	if (player.speed.y > 6) {
+	if (player.speed.y > 8) {
 		player.speed.y = 6
 	}
 	return state
@@ -113,16 +132,6 @@ export const updatePosition = state => {
 	floor.x = player.x - 100
 	return state
 }
-
-/*
-export const updateVisible = state => {
-	const [{ aliens, player }] = state
-	aliens.forEach(x => {
-		x.visible = x.x < player.x + screen.width && x.x > player.x - 158 && x.y < screen.height
-	})
-	return state
-}
-*/
 
 export const updateVisible = keyPath => state => {
 	const [{ player }] = state

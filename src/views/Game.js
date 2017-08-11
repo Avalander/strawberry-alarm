@@ -15,7 +15,6 @@ import {
 import config, { keys } from 'config'
 import spritesReducer from 'reducers'
 import {
-	playerStateReducer,
 	playerStateMapper,
 	gameStateReducer,
 	updateSpeed,
@@ -36,13 +35,9 @@ const inputHandler = () => {
 		.filter(x => recognisedKeys.indexOf(x.keyCode) !== -1)
 		.map(x => {
 			x.preventDefault()
-			return { type: x.type, keyCode: x.keyCode }
+			return { type: x.type, value: x.keyCode }
 		})
-		.compose(dropRepeats((a, b) => a.type === b.type && a.keyCode === b.keyCode))
-		.fold((acc, { type, keyCode }) => {
-			acc[keyCode] = type === 'keydown'
-			return acc
-		}, {})
+		.compose(dropRepeats((a, b) => a.type === b.type && a.value === b.value))
 	return keyboard$
 }
 
@@ -56,12 +51,11 @@ export default function Game({ PIXI }) {
 		.map(i => instructionsText.substring(0, i).split('\n'))
 		.map(text => div('.column', text.map(x => span(x))))
 		
-	const keyboard$ = inputHandler().map(x => ({ type: 'KEYBOARD', value: x }))
+	const keyboard$ = inputHandler()
 	const animation$ = PIXI.animation$.map(x => ({ type: 'ANIMATION', value: x }))
 	const state$ = xs.merge(keyboard$, animation$)
-		.fold(playerStateReducer)
-		.filter(x => x !== undefined)
 		.map(playerStateMapper)
+		.startWith(() => {})
 
 	const sprites$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
@@ -88,15 +82,6 @@ export default function Game({ PIXI }) {
 			x.elisa_jumping,
 			x.elisa_attacking,
 		]))
-		/*
-		.map(x => draw(Object.values(x).reduce((acc, x) => {
-				if (x instanceof Array) {
-					return acc.concat(x)
-				}
-				acc.push(x)
-				return acc
-			}, [])))
-		*/
 	
 	
 	return {

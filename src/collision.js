@@ -69,8 +69,12 @@ export const updateCollisions = update => {
 	const gameObjects = [...state.terrain, state.floor]
 	
 	gameObjects.forEach(x => {
+		if (player.speed.y < 0) return
 		const c = sidedCollision(x, collision(x, player))
 		correctPosition(player, c, dt)
+		if (c && player.state === playerStates.jumping) {
+			player.state = player.resumeToState
+		}
 	})
 
 	updateAlienCollisions(aliens, player, playerAttack, gameObjects, dt)
