@@ -4,7 +4,7 @@ import { spritesheet } from 'config'
 import R from 'ramda'
 
 
-const initFlag = animatedSprite({
+const initFlag = () => animatedSprite({
 	frames: R.range(1, 5).map(i => ([ spritesheet, `flag-0${i}.png`])),
 	props: {
 		position: { x: 0, y: 0 },
@@ -13,7 +13,7 @@ const initFlag = animatedSprite({
 	start: true,
 })
 
-export const flagReducer = ({ flag_tile=initFlag }, [{ player, flag }]) => {
+export const flagReducer = ({ flag_tile=initFlag() }, [{ player, flag }]) => {
 	flag_tile.props.position.x = flag.x - (player.x - 50)
 	flag_tile.props.position.y = flag.y
 	flag_tile.props.visible = flag.visible
