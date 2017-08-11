@@ -29,7 +29,18 @@ export const tile = () => ({
 	},
 })
 
+export const flag = () => ({
+	visible: true,
+	hitBox: {
+		x: 6,
+		y: 8,
+		width: 48,
+		height: 73,
+	}
+})
+
 export default {
 	alien,
+	flag,
 	tile,
 }

@@ -20,6 +20,7 @@ const spritesToDraw = x => {
 		x.floor_02,
 		x.floor_03,
 		...x.terrain_tiles,
+		x.flag_tile,
 	].concat(sprites)
 
 	return draw(result)

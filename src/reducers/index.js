@@ -9,6 +9,7 @@ import {
 	alienDyingReducer,
 } from './alien'
 import { terrainReducer } from './terrain'
+import { flagReducer } from './flag'
 
 
 const reducers = [
@@ -19,6 +20,7 @@ const reducers = [
 	alienReducer,
 	alienDyingReducer,
 	terrainReducer,
+	flagReducer,
 ]
 
 const spritesReducer = (state, input) =>

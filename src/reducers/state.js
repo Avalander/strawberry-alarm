@@ -40,6 +40,7 @@ const initState = {
 		Object.assign({ x: 1800, y: 356 }, prefabs.alien()),
 	],
 	terrain: level.terrain.map(x => Object.assign(x, prefabs[x.prefab]())),
+	flag: Object.assign(level.flag, prefabs.flag())
 }
 
 const commands = {
