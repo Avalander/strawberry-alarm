@@ -4,7 +4,7 @@ import { screen, keys, playerStates, alienStates, alien as alienConfig } from 'c
 import level from 'levels/level-01.json'
 
 
-const initState = {
+const initState = () => ([{
 	player: {
 		state: playerStates.idle,
 		previousState: playerStates.idle,
@@ -39,9 +39,9 @@ const initState = {
 		Object.assign({ x: 1500, y: 356 }, prefabs.alien()),
 		Object.assign({ x: 1800, y: 356 }, prefabs.alien()),
 	],
-	terrain: level.terrain.map(x => Object.assign(x, prefabs[x.prefab]())),
-	flag: Object.assign(level.flag, prefabs.flag())
-}
+	terrain: level.terrain.map(x => Object.assign(prefabs[x.prefab](), x)),
+	flag: Object.assign(prefabs.flag(), level.flag)
+}])
 
 const commands = {
 	attack: player => {
@@ -97,7 +97,7 @@ export const playerStateMapper = ({ type, value }) => {
 	return actionHandlers[type](value)
 }
 
-export const gameStateReducer = (state=[initState], [ command, dt]) => {
+export const gameStateReducer = (state=initState(), [ command, dt]) => {
 	const [{ player }] = state
 	player.previousState = player.state
 	command(player)

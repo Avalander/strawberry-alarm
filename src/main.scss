@@ -40,8 +40,26 @@ $color-text: #eef;
 	padding: 5px;
 }
 
+.center {
+	display: flex;
+	flex-direction: column;
+	align-content: center;
+	justify-content: center;
+	width: $screen-width;
+	height: $screen-height;
+	text-align: center;
+}
+
+.window {
+	background: rgba(0,0,0,0.6);
+}
+
 h1 {
 	font-size: 36px;
+}
+
+h2 {
+	font-size: 32px;
 }
 
 button {

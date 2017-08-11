@@ -16,6 +16,7 @@ const spritesToDraw = x => {
 
 	const result = [
 		x.background,
+		x.moon,
 		x.floor_01,
 		x.floor_02,
 		x.floor_03,

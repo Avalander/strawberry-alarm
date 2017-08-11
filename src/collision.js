@@ -82,6 +82,11 @@ export const updateCollisions = update => {
 	return update
 }
 
+export const collisionWithFlag = update => {
+	const [{ player, flag }] = update
+	return collision(player, flag)
+}
+
 /*
 float w = 0.5 * (A.width() + B.width());
 float h = 0.5 * (A.height() + B.height());

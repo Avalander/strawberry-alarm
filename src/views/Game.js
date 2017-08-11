@@ -1,9 +1,11 @@
 import xs from 'xstream'
 import fromEvent from 'xstream/extra/fromEvent'
 import dropRepeats from 'xstream/extra/dropRepeats'
+import delay from 'xstream/extra/delay'
 
 import {
 	div,
+	h2,
 	span,
 } from '@cycle/dom'
 
@@ -24,7 +26,10 @@ import {
 } from 'reducers/state'
 import spritesToDraw from 'reducers/render'
 
-import { updateCollisions } from 'collision'
+import {
+	updateCollisions,
+	collisionWithFlag,
+} from 'collision'
 
 
 const recognisedKeys = Object.values(keys)
@@ -43,13 +48,11 @@ const inputHandler = () => {
 	return keyboard$
 }
 
+const instructionsText = `Aliens are invading your castle. Go and fight them.
+Use arrow keys to move and space to attack.`
 
 export default function Game({ PIXI }) {
-	const gameOver$ = xs.never()
-
-	const instructionsText = `Aliens are invading your castle. Go and fight them.
-	Use arrow keys to move and space to attack.`
-	const vtree$ = xs.periodic(50).take(instructionsText.length + 1)
+	const instructionsText$ = xs.periodic(50).take(instructionsText.length + 1)
 		.map(i => instructionsText.substring(0, i).split('\n'))
 		.map(text => div('.column', text.map(x => span(x))))
 		
@@ -59,7 +62,7 @@ export default function Game({ PIXI }) {
 		.map(playerStateMapper)
 		.startWith(() => {})
 
-	const sprites$ = xs.combine(state$, PIXI.tick$)
+	const spritesAfterCollisions$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
 		.filter(x => x !== undefined)
 		.map(updateVisible('aliens'))
@@ -68,14 +71,29 @@ export default function Game({ PIXI }) {
 		.map(updatePosition)
 		.map(updateAliens)
 		.map(updateCollisions)
+	
+	const sprites$ = spritesAfterCollisions$
 		.fold(spritesReducer, {})
+		.map(x => {
+			console.log(x)
+			return x
+		})
 		.filter(x => x.moon)
 		.map(spritesToDraw)
 	
+	const gameOver$ = spritesAfterCollisions$
+		.map(collisionWithFlag)
+		.filter(x => x)
+		.mapTo('game-over')
+	
+	const victoryText$ = gameOver$
+		.mapTo(div('.center', div('.window', h2('Level finished!'))))
+	
+	const vtree$ = xs.merge(instructionsText$, victoryText$)
 	
 	return {
 		DOM: vtree$,
 		PIXI: sprites$,
-		router: gameOver$,
+		router: gameOver$.compose(delay(1500)),
 	}
 }

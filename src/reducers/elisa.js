@@ -10,12 +10,12 @@ import R from 'ramda'
 
 const y = config.screen.height/2 + 40
 
-const initElisaIdle = sprite({
+const initElisaIdle = () => sprite({
 	texture: [ spritesheet, 'elisa-idle.png' ],
 	props: { position: { x: 50, y }},
 })
 
-const initElisaRunning = animatedSprite({
+const initElisaRunning = () => animatedSprite({
 	frames: R.range(1, 9).map(i => ([ spritesheet, `elisa-run-0${i}.png`])),
 	props: {
 		position: { x: 50, y },
@@ -25,7 +25,7 @@ const initElisaRunning = animatedSprite({
 	start: true,
 })
 
-const initElisaAttacking = animatedSprite({
+const initElisaAttacking = () => animatedSprite({
 	frames: R.range(1, 7).map(i => ([ spritesheet, `elisa-attack-0${i}.png`])),
 	props: {
 		position: { x: 50, y },
@@ -34,7 +34,7 @@ const initElisaAttacking = animatedSprite({
 	}
 })
 
-const initElisaJumping = animatedSprite({
+const initElisaJumping = () => animatedSprite({
 	frames: R.range(1, 5).map(i => ([ spritesheet, `elisa-jump-0${i}.png`])),
 	props: {
 		position: { x: 50, y },
@@ -48,7 +48,7 @@ const updatePosition = (sprite, player) => {
 	return sprite
 }
 
-export const elisaReducer = ({ elisa_running=initElisaRunning, elisa_idle=initElisaIdle, elisa_attacking=initElisaAttacking, elisa_jumping=initElisaJumping }, [{ player }]) => {
+export const elisaReducer = ({ elisa_running=initElisaRunning(), elisa_idle=initElisaIdle(), elisa_attacking=initElisaAttacking(), elisa_jumping=initElisaJumping() }, [{ player }]) => {
 	elisa_attacking.play = player.state === playerStates.attacking && player.previousState !== player.state ? 'elisa-attack' : undefined
 	elisa_jumping.play = player.state === playerStates.jumping && player.previousState !== player.state ? 'elisa-jump' : undefined
 	elisa_attacking.props.visible = player.state === playerStates.attacking

@@ -4,6 +4,7 @@ import {
 	button,
 	div,
 	h1,
+	span,
 } from '@cycle/dom'
 
 
@@ -12,9 +13,10 @@ export default function GameOver({ DOM }) {
 		.mapTo('main-menu')
 	
 	const vtree$ = xs.of(
-		div([
+		div('.content', [
 			h1('Game Over!'),
-			button('.back', 'Back to Main Menu')
+			div(button('.back', 'Back to Main Menu')),
+			span(' '),
 		])
 	)
 
