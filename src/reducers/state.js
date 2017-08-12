@@ -73,7 +73,7 @@ const commands = {
 }
 
 const actionHandlers = {
-	'ANIMATION': value => value.startsWith('elisa') ? commands.resume : commands.none,
+	'ANIMATION': value => value === 'elisa-attacking' ? commands.resume : commands.none,
 	'keydown': value => {
 		switch (value) {
 			case keys.space:
