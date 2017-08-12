@@ -104,7 +104,9 @@ export const gameStateReducer = (state=initState(), [ command, dt]) => {
 
 export const updateCamera = state => {
 	const [{ camera, player }] = state
-	camera.x = player.x - 50
+	if (player.x > camera.x + 100) {
+		camera.x = player.x - 100
+	}
 	return state
 }
 
@@ -128,12 +130,12 @@ export const updateSpeed = state => {
 }
 
 export const updatePosition = state => {
-	const [{ player, playerAttack, floor }, dt] = state
+	const [{ player, playerAttack, floor, camera }, dt] = state
 	player.x += player.speed.x * dt
 	player.y += player.speed.y * dt
 	playerAttack.x = player.x
 	playerAttack.y = player.y
-	floor.x = player.x - 100
+	floor.x = camera.x - 100
 	return state
 }
 
