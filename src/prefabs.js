@@ -5,7 +5,7 @@ export const alien = () => ({
 	hitBox: {
 		x: 30,
 		y: 5,
-		width: 57,
+		width: 50,
 		height: 103,
 	},
 	speed: {

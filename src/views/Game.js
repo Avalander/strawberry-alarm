@@ -4,6 +4,7 @@ import dropRepeats from 'xstream/extra/dropRepeats'
 import delay from 'xstream/extra/delay'
 
 import {
+	button,
 	div,
 	h2,
 	span,
@@ -14,7 +15,7 @@ import {
 	clear,
 } from 'drivers/pixi-driver'
 
-import config, { keys } from 'config'
+import config, { keys, alienStates } from 'config'
 import spritesReducer from 'reducers'
 import {
 	playerStateMapper,
@@ -53,7 +54,7 @@ const inputHandler = () => {
 const instructionsText = `Aliens are invading your castle. Go and fight them.
 Use arrow keys to move and space to attack.`
 
-export default function Game({ PIXI }) {
+export default function Game({ DOM, PIXI }) {
 	const instructionsText$ = xs.periodic(50).take(instructionsText.length + 1)
 		.map(i => instructionsText.substring(0, i).split('\n'))
 		.map(text => div('.column', text.map(x => span(x))))
@@ -84,16 +85,23 @@ export default function Game({ PIXI }) {
 	const gameOver$ = spritesAfterCollisions$
 		.map(collisionWithFlag)
 		.filter(x => x)
-		.mapTo('game-over')
 	
-	const victoryText$ = gameOver$
-		.mapTo(div('.center', div('.window', h2('Level finished!'))))
+	const victoryText$ = xs.combine(gameOver$, spritesAfterCollisions$)
+		.map(([ _, [{ aliens }]]) => div('.center', div('.window', [
+			h2('Level finished!'),
+			div('.column', span(`Aliens defeated: ${aliens.filter(x => x.state === alienStates.dying).length}`)),
+			div('.column', span(`Aliens escaped: ${aliens.filter(x => x.state !== alienStates.dying).length}`)),
+			button('.next', 'Continue'),
+		])))
 	
 	const vtree$ = xs.merge(instructionsText$, victoryText$)
+
+	const next$ = DOM.select('.next').events('click')
+		.mapTo('game-over')
 	
 	return {
 		DOM: vtree$,
 		PIXI: sprites$,
-		router: gameOver$.compose(delay(1500)),
+		router: next$,
 	}
 }
