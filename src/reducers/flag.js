@@ -13,8 +13,8 @@ const initFlag = () => animatedSprite({
 	start: true,
 })
 
-export const flagReducer = ({ flag_tile=initFlag() }, [{ player, flag }]) => {
-	flag_tile.props.position.x = flag.x - (player.x - 50)
+export const flagReducer = ({ flag_tile=initFlag() }, [{ camera, flag }]) => {
+	flag_tile.props.position.x = flag.x - camera.x
 	flag_tile.props.position.y = flag.y
 	flag_tile.props.visible = flag.visible
 	return { flag_tile }

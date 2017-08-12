@@ -12,10 +12,10 @@ const initTile = ({ texture }) => sprite({
 	}
 })
 
-export const terrainReducer = ({ terrain_tiles }, [{ player, terrain }]) => {
+export const terrainReducer = ({ terrain_tiles }, [{ camera, terrain }]) => {
 	terrain_tiles = terrain_tiles || terrain.map(initTile)
 	for (let i=0; i<terrain.length; i++) {
-		terrain_tiles[i].props.position.x = terrain[i].x - (player.x - 50)
+		terrain_tiles[i].props.position.x = terrain[i].x - camera.x
 		terrain_tiles[i].props.position.y = terrain[i].y
 		terrain_tiles[i].props.visible = terrain[i].visible
 	}
