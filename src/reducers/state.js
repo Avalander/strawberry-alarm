@@ -17,6 +17,11 @@ const initState = () => ([{
 		previousState: playerStates.idle,
 		resumeToState: playerStates.idle,
 		direction: directions.right,
+		jump: {
+			speed: 0,
+			direction: 1,
+			directionChanged: false,
+		},
 		x: 50,
 		y: 360,
 		speed: { x: 0, y: 0 },
@@ -82,6 +87,8 @@ const commands = {
 	jump: player => {
 		if (player.state !== playerStates.attacking) {
 			player.state = playerStates.jumping
+			player.jump.direction = player.direction
+			player.jump.directionChanged = false
 		}
 	},
 	stop: direction => player => {
@@ -151,6 +158,17 @@ export const updateCamera = state => {
 	return state
 }
 
+export const updateJumpSpeed = state => {
+	const [{ player }] = state
+	if (player.state === playerStates.jumping) {
+		player.jump.speed = player.resumeToState === playerStates.moving ? 1.6 : 0
+		if (player.direction !== player.jump.direction || player.speed.x === 0) {
+			player.jump.directionChanged = true
+		}
+	}
+	return state
+}
+
 export const updateSpeed = state => {
 	const [{ player }] = state
 	switch (player.state) {
@@ -158,9 +176,6 @@ export const updateSpeed = state => {
 			player.speed.x = 3.2
 			break
 		case playerStates.jumping:
-			if (player.resumeToState === playerStates.moving) {
-				player.speed.x = 3.2
-			}
 			break
 		default:
 			player.speed.x = 0
@@ -175,7 +190,12 @@ export const updateSpeed = state => {
 
 export const updatePosition = state => {
 	const [{ player, playerAttack, floor, camera }, dt] = state
-	player.x += player.speed.x * dt * player.direction
+	if (player.state === playerStates.jumping && player.jump.directionChanged) {
+		player.x += player.jump.speed * dt * player.direction
+	}
+	else {
+		player.x += player.speed.x * dt * player.direction
+	}
 	player.y += player.speed.y * dt
 	playerAttack.x = player.x
 	playerAttack.y = player.y

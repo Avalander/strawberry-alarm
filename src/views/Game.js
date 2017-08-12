@@ -20,6 +20,7 @@ import {
 	playerStateMapper,
 	gameStateReducer,
 	updateCamera,
+	updateJumpSpeed,
 	updateSpeed,
 	updatePosition,
 	updateVisible,
@@ -69,6 +70,7 @@ export default function Game({ PIXI }) {
 		.map(updateCamera)
 		.map(updateVisible('aliens'))
 		.map(updateVisible('terrain'))
+		.map(updateJumpSpeed)
 		.map(updateSpeed)
 		.map(updatePosition)
 		.map(updateAliens)
