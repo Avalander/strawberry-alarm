@@ -1,7 +1,7 @@
 import { draw } from 'drivers/pixi-driver'
 
 
-const sortSprites = (a, b) => b.props.position.y - a.props.position.y
+const sortSprites = (a, b) => a.props.position.y - b.props.position.y
 
 const spritesToDraw = x => {
 	const sprites = [

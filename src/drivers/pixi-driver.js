@@ -90,18 +90,19 @@ const Main = (app, sprites$, interaction$, animation$) => () => {
 	const spritesLookup = {}
 
 	sprites$.addListener({
-		next: ({ action, sprites }) => {
+		next: ({ action, sprites, sort }) => {
 			if (action === 'clear') {
 				app.stage.removeChildren()
 				return
 			}
+			app.stage.removeChildren()
 			sprites.forEach(data => {
 				let sprite = spritesLookup[data.key]
 				if (!sprite) {
 					sprite = create[data.type](data)
-					app.stage.addChild(sprite)
 					spritesLookup[data.key] = sprite
 				}
+				app.stage.addChild(sprite)
 				updateSprite(sprite, data.props)
 				updateInteraction(sprite, data.props, interaction$)
 				updateAnimation(sprite, data.play, animation$)
@@ -132,7 +133,7 @@ export default function makePIXIDriver(root, { resources=[], screenSize }) {
 	}
 }
 
-export const draw = (sprites) => ({ action: 'draw', sprites })
+export const draw = (sprites, sort) => ({ action: 'draw', sprites, sort })
 export const clear = () => ({ action: 'clear' })
 
 export const sprite = ({ key=Symbol(), texture, props }) => ({ key, type: 'sprite', texture, props })
