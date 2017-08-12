@@ -298,3 +298,5 @@ export const updateAliens = state => {
 		})
 	return state
 }
+
+export const playerIsAlive = ([{ player }]) => player.hitPoints > 0

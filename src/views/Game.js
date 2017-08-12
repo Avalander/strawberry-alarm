@@ -30,6 +30,7 @@ import {
 	updateVisible,
 	updateAliens,
 	updateBullets,
+	playerIsAlive,
 } from 'reducers/state'
 import spritesToDraw from 'reducers/render'
 
@@ -74,6 +75,7 @@ export default function Game({ DOM, PIXI }) {
 	const spritesAfterCollisions$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
 		.filter(x => x !== undefined)
+		.filter(playerIsAlive)
 		.map(updateCamera)
 		.map(updateVisible('aliens'))
 		.map(updateVisible('terrain'))
