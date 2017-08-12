@@ -7,6 +7,7 @@ import {
 	button,
 	div,
 	h2,
+	img,
 	span,
 } from '@cycle/dom'
 
@@ -14,6 +15,8 @@ import {
 	draw,
 	clear,
 } from 'drivers/pixi-driver'
+
+import R from 'ramda'
 
 import config, { keys, alienStates } from 'config'
 import spritesReducer from 'reducers'
@@ -34,6 +37,8 @@ import {
 	updateCollisions,
 	collisionWithFlag,
 } from 'collision'
+
+import heartImg from 'assets/heart.png'
 
 
 const recognisedKeys = Object.values(keys)
@@ -97,7 +102,14 @@ export default function Game({ DOM, PIXI }) {
 			button('.next', 'Continue'),
 		])))
 	
-	const vtree$ = xs.merge(instructionsText$, victoryText$)
+	const heartsVtree$ = spritesAfterCollisions$
+		.map(([{ player }]) => div('.hearts',
+			R.range(0, player.hitPoints).map(i => img('.heart', {
+				attrs: { src: heartImg },
+			}))))
+	
+	const vtree$ = xs.combine(xs.merge(instructionsText$, victoryText$), heartsVtree$)
+		.map(x => div(x))
 
 	const next$ = DOM.select('.next').events('click')
 		.mapTo('game-over')

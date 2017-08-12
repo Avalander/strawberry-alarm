@@ -54,6 +54,18 @@ $color-text: #eef;
 	background: rgba(0,0,0,0.6);
 }
 
+.hearts {
+	position: absolute;
+	top: 600px;
+	left: 10px;
+	min-width: 200px;
+}
+
+.heart {
+	padding: 2px;
+	max-width: 24px;
+}
+
 h1 {
 	font-size: 36px;
 }

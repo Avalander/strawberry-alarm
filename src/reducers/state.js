@@ -17,6 +17,7 @@ const initState = () => ([{
 		previousState: playerStates.idle,
 		resumeToState: playerStates.idle,
 		direction: directions.right,
+		hitPoints: 4,
 		jump: {
 			speed: 0,
 			direction: 1,

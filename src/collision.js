@@ -66,7 +66,6 @@ const updateAlienCollisions = (aliens, player, playerAttack, gameObjects, dt) =>
 export const updateCollisions = update => {
 	const [ state, dt ] = update
 	const { player, playerAttack, aliens } = state
-	//const gameObjects = [...state.terrain, state.floor, state.leftBorder]
 	const playerCollisionObjects = [...state.terrain, state.floor, state.leftBorder, state.rightBorder]
 	const alienCollisionObjects = [...state.terrain, state.floor]
 	
@@ -76,6 +75,13 @@ export const updateCollisions = update => {
 		correctPosition(player, c, dt)
 		if (c && player.state === playerStates.jumping) {
 			player.state = player.resumeToState
+		}
+	})
+
+	state.bullets.filter(x => x.active && x.visible).forEach(x => {
+		if (collision(player, x)) {
+			x.active = false
+			player.hitPoints -= 1
 		}
 	})
 
