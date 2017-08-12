@@ -33,6 +33,12 @@ const initState = () => ([{
 		y: 460,
 		static: true,
 	},
+	camera: {
+		x: 0,
+		y: 0,
+		width: screen.width,
+		height: screen.height,
+	},
 	aliens: level.aliens.map(x => Object.assign(prefabs.alien(), x)),
 	terrain: level.terrain.map(x => Object.assign(prefabs[x.prefab](), x)),
 	flag: Object.assign(prefabs.flag(), level.flag)
@@ -68,7 +74,7 @@ const commands = {
 }
 
 const actionHandlers = {
-	'ANIMATION': value => value === 'elisa-attacking' ? commands.resume : commands.none,
+	'ANIMATION': value => value === 'elisa-attack' ? commands.resume : commands.none,
 	'keydown': value => {
 		switch (value) {
 			case keys.space:
@@ -84,10 +90,6 @@ const actionHandlers = {
 	'keyup': value => value === keys.right ? commands.stop : commands.none
 }
 
-export const playerStateReducer = (state=initPlayerState, { type, value }) => {
-	return actionHandlers[type](value, state)
-}
-
 export const playerStateMapper = ({ type, value }) => {
 	return actionHandlers[type](value)
 }
@@ -97,6 +99,12 @@ export const gameStateReducer = (state=initState(), [ command, dt]) => {
 	player.previousState = player.state
 	command(player)
 	state[1] = dt
+	return state
+}
+
+export const updateCamera = state => {
+	const [{ camera, player }] = state
+	camera.x = player.x - 50
 	return state
 }
 
@@ -130,9 +138,9 @@ export const updatePosition = state => {
 }
 
 export const updateVisible = keyPath => state => {
-	const [{ player }] = state
+	const [{ player, camera }] = state
 	state[0][keyPath].forEach(x => {
-		x.visible = x.x < player.x + screen.width && x.x > player.x - 158 && x.y < screen.height
+		x.visible = x.x < camera.x + camera.width && x.x > camera.x - 108 && x.y < camera.height
 	})
 	return state
 }

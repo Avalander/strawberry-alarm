@@ -19,6 +19,7 @@ import spritesReducer from 'reducers'
 import {
 	playerStateMapper,
 	gameStateReducer,
+	updateCamera,
 	updateSpeed,
 	updatePosition,
 	updateVisible,
@@ -65,6 +66,7 @@ export default function Game({ PIXI }) {
 	const spritesAfterCollisions$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)
 		.filter(x => x !== undefined)
+		.map(updateCamera)
 		.map(updateVisible('aliens'))
 		.map(updateVisible('terrain'))
 		.map(updateSpeed)
