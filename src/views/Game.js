@@ -61,7 +61,7 @@ export default function Game({ PIXI }) {
 	const animation$ = PIXI.animation$.map(x => ({ type: 'ANIMATION', value: x }))
 	const state$ = xs.merge(keyboard$, animation$)
 		.map(playerStateMapper)
-		.startWith(() => {})
+		.startWith([() => {}])
 
 	const spritesAfterCollisions$ = xs.combine(state$, PIXI.tick$)
 		.fold(gameStateReducer)

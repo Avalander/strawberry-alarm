@@ -11,6 +11,11 @@ export const keys = {
 	space: 32,
 }
 
+export const directions = {
+	left: -1,
+	right: 1,
+}
+
 export const spritesheet = 'src/assets/sprites.json'
 
 export const playerStates = {
@@ -41,6 +46,7 @@ export const terrain = {
 
 export default {
 	alien,
+	directions,
 	keys,
 	playerStates,
 	screen,

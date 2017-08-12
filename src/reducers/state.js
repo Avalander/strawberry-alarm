@@ -1,5 +1,12 @@
 import prefabs from 'prefabs'
-import { screen, keys, playerStates, alienStates, alien as alienConfig } from 'config'
+import {
+	alien as alienConfig,
+	alienStates,
+	directions,
+	keys,
+	playerStates,
+	screen,
+} from 'config'
 
 import level from 'levels/level-01.json'
 
@@ -9,6 +16,7 @@ const initState = () => ([{
 		state: playerStates.idle,
 		previousState: playerStates.idle,
 		resumeToState: playerStates.idle,
+		direction: directions.right,
 		x: 50,
 		y: 360,
 		speed: { x: 0, y: 0 },
@@ -50,6 +58,9 @@ const commands = {
 			player.state = playerStates.attacking
 		}
 	},
+	changeDirection: direction => player => {
+		player.direction = direction
+	},
 	move: player => {
 		if (player.state === playerStates.idle) {
 			player.state = playerStates.moving
@@ -61,11 +72,13 @@ const commands = {
 			player.state = playerStates.jumping
 		}
 	},
-	stop: player => {
-		if (player.state === playerStates.moving) {
-			player.state = playerStates.idle
+	stop: direction => player => {
+		if (direction === player.direction) {
+			if (player.state === playerStates.moving) {
+				player.state = playerStates.idle
+			}
+			player.resumeToState = playerStates.idle
 		}
-		player.resumeToState = playerStates.idle
 	},
 	resume: player => {
 		player.state = player.resumeToState
@@ -74,20 +87,31 @@ const commands = {
 }
 
 const actionHandlers = {
-	'ANIMATION': value => value === 'elisa-attack' ? commands.resume : commands.none,
+	'ANIMATION': value => value === 'elisa-attack' ? [commands.resume] : [commands.none],
 	'keydown': value => {
 		switch (value) {
 			case keys.space:
-				return commands.attack
+				return [commands.attack]
 			case keys.up:
-				return commands.jump
+				return [commands.jump]
 			case keys.right:
-				return commands.move
+				return [commands.changeDirection(directions.right), commands.move]
+			case keys.left:
+				return [commands.changeDirection(directions.left), commands.move]
 			default:
-				return commands.none
+				return [commands.none]
 		}
 	},
-	'keyup': value => value === keys.right ? commands.stop : commands.none
+	'keyup': value => {
+		switch (value) {
+			case keys.right:
+				return [commands.stop(directions.right)]
+			case keys.left:
+				return [commands.stop(directions.left)]
+			default:
+				return [commands.none]
+		}
+	}	
 }
 
 export const playerStateMapper = ({ type, value }) => {
@@ -97,7 +121,7 @@ export const playerStateMapper = ({ type, value }) => {
 export const gameStateReducer = (state=initState(), [ command, dt]) => {
 	const [{ player }] = state
 	player.previousState = player.state
-	command(player)
+	command.forEach(c => c(player))
 	state[1] = dt
 	return state
 }
@@ -117,9 +141,12 @@ export const updateSpeed = state => {
 			player.speed.x = 3.2
 			break
 		case playerStates.jumping:
+			if (player.resumeToState === playerStates.moving) {
+				player.speed.x = 3.2
+			}
 			break
 		default:
-		player.speed.x = 0
+			player.speed.x = 0
 	}
 	player.speed.y -= (player.state === playerStates.jumping && player.previousState !== player.state) ? 10 : 0
 	player.speed.y += 0.5
@@ -131,7 +158,7 @@ export const updateSpeed = state => {
 
 export const updatePosition = state => {
 	const [{ player, playerAttack, floor, camera }, dt] = state
-	player.x += player.speed.x * dt
+	player.x += player.speed.x * dt * player.direction
 	player.y += player.speed.y * dt
 	playerAttack.x = player.x
 	playerAttack.y = player.y
