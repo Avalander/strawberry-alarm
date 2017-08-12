@@ -7,6 +7,7 @@ const spritesToDraw = x => {
 	const sprites = [
 		...x.aliens_dying,
 		...x.aliens,
+		...x.aliens_attacking,
 		x.elisa_idle,
 		x.elisa_running,
 		x.elisa_jumping,

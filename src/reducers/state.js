@@ -66,32 +66,33 @@ const initState = () => ([{
 	},
 	aliens: level.aliens.map(x => Object.assign(prefabs.alien(), x)),
 	terrain: level.terrain.map(x => Object.assign(prefabs[x.prefab](), x)),
-	flag: Object.assign(prefabs.flag(), level.flag)
+	flag: Object.assign(prefabs.flag(), level.flag),
+	bullets: level.aliens.map(x => prefabs.bullet()),
 }])
 
 const commands = {
-	attack: player => {
+	attack: ({ player }) => {
 		if (player.state !== playerStates.jumping) {
 			player.state = playerStates.attacking
 		}
 	},
-	changeDirection: direction => player => {
+	changeDirection: direction => ({ player }) => {
 		player.direction = direction
 	},
-	move: player => {
+	move: ({ player }) => {
 		if (player.state === playerStates.idle) {
 			player.state = playerStates.moving
 		}
 		player.resumeToState = playerStates.moving
 	},
-	jump: player => {
+	jump: ({ player }) => {
 		if (player.state !== playerStates.attacking) {
 			player.state = playerStates.jumping
 			player.jump.direction = player.direction
 			player.jump.directionChanged = false
 		}
 	},
-	stop: direction => player => {
+	stop: direction => ({ player }) => {
 		if (direction === player.direction) {
 			if (player.state === playerStates.moving) {
 				player.state = playerStates.idle
@@ -99,14 +100,22 @@ const commands = {
 			player.resumeToState = playerStates.idle
 		}
 	},
-	resume: player => {
+	resume: ({ player }) => {
 		player.state = player.resumeToState
+	},
+	resumeAlien: id => ({ aliens }) => {
+		aliens.find(x => x.id === id).state = alienStates.moving
 	},
 	none: () => {},
 }
 
 const actionHandlers = {
-	'ANIMATION': value => value === 'elisa-attack' ? [commands.resume] : [commands.none],
+	'ANIMATION': value => {
+		if (value instanceof Array && value[0] === 'alien-attack') {
+			return [commands.resumeAlien(value[1])]
+		}
+		return value === 'elisa-attack' ? [commands.resume] : [commands.none]
+	},
 	'keydown': value => {
 		switch (value) {
 			case keys.space:
@@ -140,7 +149,7 @@ export const playerStateMapper = ({ type, value }) => {
 export const gameStateReducer = (state=initState(), [ command, dt]) => {
 	const [{ player }] = state
 	player.previousState = player.state
-	command.forEach(c => c(player))
+	command.forEach(c => c(state[0]))
 	state[1] = dt
 	return state
 }
@@ -215,11 +224,24 @@ export const updateVisible = keyPath => state => {
 }
 
 export const updateAliens = state => {
-	const [{ aliens }] = state
+	const [{ aliens, player }, dt] = state
 	aliens
 		.filter(x => x.visible)
 		.map(x => {
 			x.stateChanged = false
+			x.timeSinceLastShot += dt
+			return x
+		})
+		.map(x => {
+			const hasReloaded = x.timeSinceLastShot > alienConfig.shootFreq
+			const playerNear = x.x < player.x + alienConfig.shootDistance && x.x > player.x
+			const playerInSight = x.y < player.y + alienConfig.shootAngle && x.y > player.y - alienConfig.shootAngle
+			const isMoving = x.state === alienStates.moving
+			if (hasReloaded && isMoving && playerNear && playerInSight) {
+				x.state = playerStates.attacking
+				x.stateChanged = true
+				x.timeSinceLastShot = 0
+			}
 			return x
 		})
 		.map(x => {

@@ -31,11 +31,18 @@ export const alien = {
 		moving: -0.5,
 		dying: 2,
 	},
+	shootFreq: 200,
+	shootDistance: 600,
+	shootAngle: 50,
+	bullet: {
+		speed: 10,
+	}
 }
 
 export const alienStates = {
-	moving: 'moving',
+	attacking: 'attacking',
 	dying: 'dying',
+	moving: 'moving',
 }
 
 export const terrain = {

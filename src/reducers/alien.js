@@ -29,12 +29,20 @@ const initAlienDying = ()  => animatedSprite({
 	}
 })
 
+const initAlienAttacking = () => animatedSprite({
+	frames: R.range(1, 6).map(i => ([ spritesheet, `alien-fire-0${i}.png` ])),
+	props: {
+		position: { x: 0, y: 0 },
+		animationSpeed: 0.1,
+	}
+})
+
 export const alienReducer = ({ aliens }, [ state ]) => {
 	aliens = aliens || state.aliens.map(x => initAlien())
 	for (let i=0; i<state.aliens.length; i++) {
 		aliens[i].props.position.x = state.aliens[i].x - state.camera.x
 		aliens[i].props.position.y = state.aliens[i].y
-		aliens[i].props.visible = state.aliens[i].visible && state.aliens[i].state !== alienStates.dying
+		aliens[i].props.visible = state.aliens[i].visible && state.aliens[i].state === alienStates.moving
 	}
 	return { aliens }
 }
@@ -54,4 +62,17 @@ export const alienDyingReducer = ({ aliens_dying }, [ state ]) => {
 		aliens_dying[i].props.visible = false
 	}
 	return { aliens_dying }
+}
+
+export const alienAttackingReducer = ({ aliens_attacking }, [{ aliens, camera }]) => {
+	aliens_attacking = aliens_attacking || aliens.map(x => initAlienAttacking())
+	for (let i=0; i<aliens.length; i++) {
+		aliens_attacking[i].props.position.x = aliens[i].x - camera.x
+		aliens_attacking[i].props.position.y = aliens[i].y
+		aliens_attacking[i].props.visible = aliens[i].visible && aliens[i].state === alienStates.attacking
+		if (aliens[i].stateChanged && aliens[i].state === alienStates.attacking) {
+			aliens_attacking[i].play = [ 'alien-attack', aliens[i].id ]
+		}
+	}
+	return { aliens_attacking }
 }

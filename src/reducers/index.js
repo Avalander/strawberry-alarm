@@ -7,6 +7,7 @@ import { elisaReducer } from './elisa'
 import {
 	alienReducer,
 	alienDyingReducer,
+	alienAttackingReducer,
 } from './alien'
 import { terrainReducer } from './terrain'
 import { flagReducer } from './flag'
@@ -19,6 +20,7 @@ const reducers = [
 	elisaReducer,
 	alienReducer,
 	alienDyingReducer,
+	alienAttackingReducer,
 	terrainReducer,
 	flagReducer,
 ]

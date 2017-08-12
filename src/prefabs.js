@@ -1,5 +1,7 @@
-import { alienStates } from 'config'
+import { alienStates, alien as alienConfig } from 'config'
 
+
+let nextAlienId = 1
 
 export const alien = () => ({
 	hitBox: {
@@ -14,6 +16,22 @@ export const alien = () => ({
 	},
 	state: alienStates.moving,
 	stateChanged: false,
+	timeSinceLastShot: 0,
+	id: nextAlienId++,
+})
+
+export const bullet = () => ({
+	hitBox: {
+		x: 2,
+		y: 5,
+		width: 52,
+		height: 11,
+	},
+	speed: {
+		x: -alienConfig.bullet.speed,
+		y: 0,
+	},
+	active: false,
 })
 
 export const tile = () => ({
@@ -41,6 +59,7 @@ export const flag = () => ({
 
 export default {
 	alien,
+	bullet,
 	flag,
 	tile,
 }
