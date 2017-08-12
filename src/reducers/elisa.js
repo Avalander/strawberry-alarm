@@ -12,13 +12,17 @@ const y = config.screen.height/2 + 40
 
 const initElisaIdle = () => sprite({
 	texture: [ spritesheet, 'elisa-idle.png' ],
-	props: { position: { x: 50, y }},
+	props: {
+		position: { x: 50, y },
+		scale: { x: 1, y: 1 },
+	},
 })
 
 const initElisaRunning = () => animatedSprite({
 	frames: R.range(1, 9).map(i => ([ spritesheet, `elisa-run-0${i}.png`])),
 	props: {
 		position: { x: 50, y },
+		scale: { x: 1, y: 1 },
 		animationSpeed: 0.2,
 		visible: false,
 	},
@@ -29,6 +33,7 @@ const initElisaAttacking = () => animatedSprite({
 	frames: R.range(1, 7).map(i => ([ spritesheet, `elisa-attack-0${i}.png`])),
 	props: {
 		position: { x: 50, y },
+		scale: { x: 1, y: 1 },
 		animationSpeed: 0.2,
 		visible: false,
 	}
@@ -38,6 +43,7 @@ const initElisaJumping = () => animatedSprite({
 	frames: R.range(1, 5).map(i => ([ spritesheet, `elisa-jump-0${i}.png`])),
 	props: {
 		position: { x: 50, y },
+		scale: { x: 1, y: 1 },
 		animationSpeed: 0.1,
 		visible: false,
 	}
@@ -46,6 +52,10 @@ const initElisaJumping = () => animatedSprite({
 const updatePosition = (sprite, player, camera) => {
 	sprite.props.position.x = player.x - camera.x
 	sprite.props.position.y = player.y
+	sprite.props.scale.x = player.direction
+	if (player.direction === -1) {
+		sprite.props.position.x += 108
+	}
 	return sprite
 }
 

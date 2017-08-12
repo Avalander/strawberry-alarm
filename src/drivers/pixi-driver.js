@@ -18,9 +18,9 @@ const onProgress = (loader, resource) => console.log(`Loading... ${loader.progre
 const getTexture = ([ spritesheet, id ]) => loader.resources[spritesheet].textures[id]
 
 const spriteProps = [
-	'rotation',
 	'buttonMode',
 	'loop',
+	'rotation',
 	'visible',
 ]
 const updateSprite = (sprite, data) => {
@@ -29,6 +29,10 @@ const updateSprite = (sprite, data) => {
 	if (data.hasOwnProperty('tilePosition')) {
 		sprite.tilePosition.x = data.tilePosition.x
 		sprite.tilePosition.y = data.tilePosition.y
+	}
+	if (data.hasOwnProperty('scale')) {
+		sprite.scale.x = data.scale.x
+		sprite.scale.y = data.scale.y
 	}
 	spriteProps.forEach(prop => {
 		if (data.hasOwnProperty(prop)) sprite[prop] = data[prop]

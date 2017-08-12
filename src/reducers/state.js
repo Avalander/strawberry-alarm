@@ -169,6 +169,9 @@ export const updatePosition = state => {
 	player.y += player.speed.y * dt
 	playerAttack.x = player.x
 	playerAttack.y = player.y
+	if (player.direction === directions.left) {
+		playerAttack.x -= 108
+	}
 	floor.x = camera.x - 100
 	return state
 }
