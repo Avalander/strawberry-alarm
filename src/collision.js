@@ -86,28 +86,3 @@ export const collisionWithFlag = update => {
 	const [{ player, flag }] = update
 	return collision(player, flag)
 }
-
-/*
-float w = 0.5 * (A.width() + B.width());
-float h = 0.5 * (A.height() + B.height());
-float dx = A.centerX() - B.centerX();
-float dy = A.centerY() - B.centerY();
-
-if (abs(dx) <= w && abs(dy) <= h)
-{
-    / collision! /
-    float wy = w * dy;
-    float hx = h * dx;
-
-    if (wy > hx)
-        if (wy > -hx)
-            /* collision at the top /
-        else
-            /* on the left /
-    else
-        if (wy > -hx)
-            /* on the right /
-        else
-            /* at the bottom /
-}
-*/
