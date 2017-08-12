@@ -72,7 +72,7 @@ const initState = () => ([{
 }])
 
 const commands = {
-	attack: ({ player }) => {
+	attack: () => ({ player }) => {
 		if (player.state !== playerStates.jumping) {
 			player.state = playerStates.attacking
 		}
@@ -80,13 +80,13 @@ const commands = {
 	changeDirection: direction => ({ player }) => {
 		player.direction = direction
 	},
-	move: ({ player }) => {
+	move: () => ({ player }) => {
 		if (player.state === playerStates.idle) {
 			player.state = playerStates.moving
 		}
 		player.resumeToState = playerStates.moving
 	},
-	jump: ({ player }) => {
+	jump: () => ({ player }) => {
 		if (player.state !== playerStates.attacking) {
 			player.state = playerStates.jumping
 			player.jump.direction = player.direction
@@ -101,16 +101,17 @@ const commands = {
 			player.resumeToState = playerStates.idle
 		}
 	},
-	resume: ({ player }) => {
+	resume: () => ({ player }) => {
 		player.state = player.resumeToState
 	},
 	resumeAlien: id => ({ aliens }) => {
 		const alien = aliens.find(x => x.id === id)
 		if (alien) {
 			alien.state = alienStates.moving
+			alien.fired = true
 		}
 	},
-	none: () => {},
+	none: () => () => {},
 }
 
 const actionHandlers = {
@@ -118,20 +119,20 @@ const actionHandlers = {
 		if (value instanceof Array && value[0] === 'alien-attack') {
 			return [commands.resumeAlien(value[1])]
 		}
-		return value === 'elisa-attack' ? [commands.resume] : [commands.none]
+		return value === 'elisa-attack' ? [commands.resume()] : [commands.none()]
 	},
 	'keydown': value => {
 		switch (value) {
 			case keys.space:
-				return [commands.attack]
+				return [commands.attack()]
 			case keys.up:
-				return [commands.jump]
+				return [commands.jump()]
 			case keys.right:
-				return [commands.changeDirection(directions.right), commands.move]
+				return [commands.changeDirection(directions.right), commands.move()]
 			case keys.left:
-				return [commands.changeDirection(directions.left), commands.move]
+				return [commands.changeDirection(directions.left), commands.move()]
 			default:
-				return [commands.none]
+				return [commands.none()]
 		}
 	},
 	'keyup': value => {
@@ -141,7 +142,7 @@ const actionHandlers = {
 			case keys.left:
 				return [commands.stop(directions.left)]
 			default:
-				return [commands.none]
+				return [commands.none()]
 		}
 	}	
 }
@@ -153,7 +154,12 @@ export const playerStateMapper = ({ type, value }) => {
 export const gameStateReducer = (state=initState(), [ command, dt]) => {
 	const [{ player }] = state
 	player.previousState = player.state
-	command.forEach(c => c(state[0]))
+	command
+		.filter(c => !c.executed)
+		.forEach(c => {
+			c(state[0])
+			c.executed = true
+		})
 	state[1] = dt
 	return state
 }
@@ -248,17 +254,23 @@ export const updateAliens = state => {
 			return x
 		})
 		.map((x, i) => {
+			if (x.fired) {
+				bullets[i].active = true
+				bullets[i].x = x.x
+				bullets[i].y = x.y + 45
+			}
+			x.fired = false
+			return x
+		})
+		.map((x, i) => {
 			const hasReloaded = x.timeSinceLastShot > alienConfig.shootFreq
 			const playerNear = x.x < player.x + alienConfig.shootDistance && x.x > player.x
 			const playerInSight = x.y < player.y + alienConfig.shootAngle && x.y > player.y - alienConfig.shootAngle
 			const isMoving = x.state === alienStates.moving
 			if (hasReloaded && isMoving && playerNear && playerInSight) {
-				x.state = playerStates.attacking
+				x.state = alienStates.attacking
 				x.stateChanged = true
 				x.timeSinceLastShot = 0
-				bullets[i].active = true
-				bullets[i].x = x.x
-				bullets[i].y = x.y + 45
 			}
 			return x
 		})

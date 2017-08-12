@@ -73,6 +73,9 @@ export const alienAttackingReducer = ({ aliens_attacking }, [{ aliens, camera 
 		if (aliens[i].stateChanged && aliens[i].state === alienStates.attacking) {
 			aliens_attacking[i].play = [ 'alien-attack', aliens[i].id ]
 		}
+		else {
+			aliens_attacking[i].play = undefined
+		}
 	}
 	return { aliens_attacking }
 }

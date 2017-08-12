@@ -24,6 +24,7 @@ export const playerStates = {
 	idle: 'idle',
 	jumping: 'jumping',
 	moving: 'moving',
+	wounded: 'wounded',
 }
 
 export const alien = {
