@@ -36,7 +36,7 @@ const correctPosition = (gameObject, side, dt) => {
 		gameObject.speed.y = 0
 	}
 	if (side === 'left' || side === 'right') {
-		gameObject.x -= gameObject.speed.x * dt
+		gameObject.x -= gameObject.speed.x * dt * (gameObject.direction || 1)
 		gameObject.speed.x = 0
 	}
 	return gameObject
@@ -66,7 +66,7 @@ const updateAlienCollisions = (aliens, player, playerAttack, gameObjects, dt) =>
 export const updateCollisions = update => {
 	const [ state, dt ] = update
 	const { player, playerAttack, aliens } = state
-	const gameObjects = [...state.terrain, state.floor]
+	const gameObjects = [...state.terrain, state.floor, state.leftBorder]
 	
 	gameObjects.forEach(x => {
 		if (player.speed.y < 0) return
@@ -77,7 +77,7 @@ export const updateCollisions = update => {
 		}
 	})
 
-	updateAlienCollisions(aliens, player, playerAttack, gameObjects, dt)
+	updateAlienCollisions(aliens, player, playerAttack, gameObjects.filter(x => x !== state.leftBorder), dt)
 	
 	return update
 }

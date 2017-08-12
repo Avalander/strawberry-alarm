@@ -41,6 +41,12 @@ const initState = () => ([{
 		y: 460,
 		static: true,
 	},
+	leftBorder: {
+		hitBox: { x: 0, y: 0, width: 100, height: screen.height},
+		x: -100,
+		y: 0,
+		static: true,
+	},
 	camera: {
 		x: 0,
 		y: 0,
@@ -127,10 +133,11 @@ export const gameStateReducer = (state=initState(), [ command, dt]) => {
 }
 
 export const updateCamera = state => {
-	const [{ camera, player }] = state
+	const [{ camera, player, leftBorder }] = state
 	if (player.x > camera.x + 100) {
 		camera.x = player.x - 100
 	}
+	leftBorder.x = camera.x - leftBorder.hitBox.width
 	return state
 }
 
