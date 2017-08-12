@@ -8,6 +8,7 @@ import {
 	alienReducer,
 	alienDyingReducer,
 	alienAttackingReducer,
+	alienBulletReducer,
 } from './alien'
 import { terrainReducer } from './terrain'
 import { flagReducer } from './flag'
@@ -21,6 +22,7 @@ const reducers = [
 	alienReducer,
 	alienDyingReducer,
 	alienAttackingReducer,
+	alienBulletReducer,
 	terrainReducer,
 	flagReducer,
 ]

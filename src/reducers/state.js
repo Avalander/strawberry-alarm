@@ -216,15 +216,26 @@ export const updatePosition = state => {
 }
 
 export const updateVisible = keyPath => state => {
-	const [{ player, camera }] = state
+	const [{ camera }] = state
 	state[0][keyPath].forEach(x => {
 		x.visible = x.x < camera.x + camera.width && x.x > camera.x - 108 && x.y < camera.height
 	})
 	return state
 }
 
+export const updateBullets = state => {
+	const [{ bullets }, dt] = state
+	bullets
+		.filter(x => x.active && x.visible)
+		.map(x => {
+			x.x += x.speed.x
+			return x
+		})
+	return state
+}
+
 export const updateAliens = state => {
-	const [{ aliens, player }, dt] = state
+	const [{ aliens, player, bullets }, dt] = state
 	aliens
 		.filter(x => x.visible)
 		.map(x => {
@@ -232,7 +243,7 @@ export const updateAliens = state => {
 			x.timeSinceLastShot += dt
 			return x
 		})
-		.map(x => {
+		.map((x, i) => {
 			const hasReloaded = x.timeSinceLastShot > alienConfig.shootFreq
 			const playerNear = x.x < player.x + alienConfig.shootDistance && x.x > player.x
 			const playerInSight = x.y < player.y + alienConfig.shootAngle && x.y > player.y - alienConfig.shootAngle
@@ -241,6 +252,9 @@ export const updateAliens = state => {
 				x.state = playerStates.attacking
 				x.stateChanged = true
 				x.timeSinceLastShot = 0
+				bullets[i].active = true
+				bullets[i].x = x.x
+				bullets[i].y = x.y + 45
 			}
 			return x
 		})

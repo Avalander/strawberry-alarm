@@ -32,6 +32,8 @@ export const bullet = () => ({
 		y: 0,
 	},
 	active: false,
+	x: 0,
+	y: 0,
 })
 
 export const tile = () => ({
@@ -54,7 +56,7 @@ export const flag = () => ({
 		y: 8,
 		width: 48,
 		height: 73,
-	}
+	},
 })
 
 export default {

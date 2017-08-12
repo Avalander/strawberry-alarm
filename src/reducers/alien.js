@@ -76,3 +76,23 @@ export const alienAttackingReducer = ({ aliens_attacking }, [{ aliens, camera 
 	}
 	return { aliens_attacking }
 }
+
+const initBullet = () => animatedSprite({
+	frames: R.range(1, 9).map(i => ([ spritesheet, `alien-bullet-0${i}.png`])),
+	props: {
+		position: { x: 0, y: 0 },
+		animationSpeed: 0.2,
+		visible: false,
+	},
+	start: true,
+})
+
+export const alienBulletReducer = ({ alien_bullets }, [{ bullets, camera }]) => {
+	alien_bullets = alien_bullets || bullets.map(x => initBullet())
+	for (let i=0; i<bullets.length; i++) {
+		alien_bullets[i].props.position.x = bullets[i].x - camera.x
+		alien_bullets[i].props.position.y = bullets[i].y
+		alien_bullets[i].props.visible = bullets[i].visible && bullets[i].active
+	}
+	return { alien_bullets }
+}

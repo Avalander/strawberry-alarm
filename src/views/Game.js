@@ -26,6 +26,7 @@ import {
 	updatePosition,
 	updateVisible,
 	updateAliens,
+	updateBullets,
 } from 'reducers/state'
 import spritesToDraw from 'reducers/render'
 
@@ -71,10 +72,12 @@ export default function Game({ DOM, PIXI }) {
 		.map(updateCamera)
 		.map(updateVisible('aliens'))
 		.map(updateVisible('terrain'))
+		.map(updateVisible('bullets'))
 		.map(updateJumpSpeed)
 		.map(updateSpeed)
 		.map(updatePosition)
 		.map(updateAliens)
+		.map(updateBullets)
 		.map(updateCollisions)
 	
 	const sprites$ = spritesAfterCollisions$
