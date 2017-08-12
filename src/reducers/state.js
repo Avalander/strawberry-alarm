@@ -105,7 +105,10 @@ const commands = {
 		player.state = player.resumeToState
 	},
 	resumeAlien: id => ({ aliens }) => {
-		aliens.find(x => x.id === id).state = alienStates.moving
+		const alien = aliens.find(x => x.id === id)
+		if (alien) {
+			alien.state = alienStates.moving
+		}
 	},
 	none: () => {},
 }

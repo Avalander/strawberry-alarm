@@ -16,7 +16,7 @@ export const alien = () => ({
 	},
 	state: alienStates.moving,
 	stateChanged: false,
-	timeSinceLastShot: 0,
+	timeSinceLastShot: Math.floor(Math.random() * 100),
 	id: nextAlienId++,
 })
 

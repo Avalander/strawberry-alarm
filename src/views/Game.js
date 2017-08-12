@@ -102,21 +102,31 @@ export default function Game({ DOM, PIXI }) {
 			button('.next', 'Continue'),
 		])))
 	
+	const defeatText$ = spritesAfterCollisions$
+		.filter(([{ player }]) => player.hitPoints <= 0)
+		.mapTo(div('.center', div('.window', [
+			h2('You lost!'),
+			button('.retry', 'Retry'),
+		])))
+	
 	const heartsVtree$ = spritesAfterCollisions$
 		.map(([{ player }]) => div('.hearts',
 			R.range(0, player.hitPoints).map(i => img('.heart', {
 				attrs: { src: heartImg },
 			}))))
 	
-	const vtree$ = xs.combine(xs.merge(instructionsText$, victoryText$), heartsVtree$)
+	const vtree$ = xs.combine(xs.merge(instructionsText$, victoryText$, defeatText$), heartsVtree$)
 		.map(x => div(x))
 
 	const next$ = DOM.select('.next').events('click')
 		.mapTo('game-over')
+	const retry$ = DOM.select('.retry').events('click')
+		.mapTo('game')
+	const router$ = xs.merge(next$, retry$)
 	
 	return {
 		DOM: vtree$,
 		PIXI: sprites$,
-		router: next$,
+		router: router$,
 	}
 }
