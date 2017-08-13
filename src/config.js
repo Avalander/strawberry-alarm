@@ -24,6 +24,7 @@ export const spritesheet = 'src/assets/sprites.json'
 
 export const playerStates = {
 	attacking: 'attacking',
+	crouching: 'crouching',
 	falling: 'falling',
 	idle: 'idle',
 	jumping: 'jumping',

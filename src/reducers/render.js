@@ -13,6 +13,7 @@ const spritesToDraw = x => {
 		x.elisa_jumping,
 		x.elisa_attacking,
 		x.elisa_wounded,
+		x.elisa_crouching,
 		...x.alien_bullets,
 	]
 	sprites.sort(sortSprites)

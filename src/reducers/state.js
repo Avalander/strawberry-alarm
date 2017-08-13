@@ -93,6 +93,11 @@ const commands = {
 			player.jump.directionChanged = false
 		}
 	},
+	crouch: () => ({ player }) => {
+		if (player.state !== playerStates.attacking && player.state !== playerStates.jumping) {
+			player.state = playerStates.crouching
+		}
+	},
 	stop: direction => ({ player }) => {
 		if (direction === player.direction) {
 			if (player.state === playerStates.moving) {
@@ -101,8 +106,10 @@ const commands = {
 			player.resumeToState = playerStates.idle
 		}
 	},
-	resume: () => ({ player }) => {
-		player.state = player.resumeToState
+	resume: (fromState) => ({ player }) => {
+		if (!fromState || player.state === fromState) {
+			player.state = player.resumeToState
+		}
 	},
 	resumeAlien: id => ({ aliens }) => {
 		const alien = aliens.find(x => x.id === id)
@@ -134,6 +141,9 @@ const actionHandlers = {
 			case keys.left:
 			case keys.a:
 				return [commands.changeDirection(directions.left), commands.move()]
+			case keys.down:
+			case keys.s:
+				return [commands.crouch()]
 			default:
 				return [commands.none()]
 		}
@@ -146,6 +156,9 @@ const actionHandlers = {
 			case keys.left:
 			case keys.a:
 				return [commands.stop(directions.left)]
+			case keys.down:
+			case keys.s:
+				return [commands.resume(playerStates.crouching)]
 			default:
 				return [commands.none()]
 		}

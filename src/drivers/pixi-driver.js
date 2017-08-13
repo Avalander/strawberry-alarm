@@ -40,11 +40,16 @@ const updateSprite = (sprite, data) => {
 	return sprite
 }
 
-const updateAnimation = (sprite, play, animation$) => {
+const updateAnimation = (sprite, play, stopAt, animation$) => {
 	if (!play) return
-	sprite.play()
+	sprite.gotoAndPlay(0)
 	sprite.onLoop = () => {
-		sprite.stop()
+		if (stopAt) {
+			sprite.gotoAndStop(stopAt)
+		}
+		else {
+			sprite.stop()
+		}
 		animation$.shamefullySendNext(play)
 	}
 }
@@ -105,7 +110,7 @@ const Main = (app, sprites$, interaction$, animation$) => () => {
 				app.stage.addChild(sprite)
 				updateSprite(sprite, data.props)
 				updateInteraction(sprite, data.props, interaction$)
-				updateAnimation(sprite, data.play, animation$)
+				updateAnimation(sprite, data.play, data.props.stopAt, animation$)
 			})
 		}
 	})
