@@ -34,6 +34,9 @@ export const bullet = () => ({
 	active: false,
 	x: 0,
 	y: 0,
+	collisions: {
+		left: true,
+	},
 })
 
 export const tile = () => ({

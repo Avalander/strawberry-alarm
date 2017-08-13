@@ -79,7 +79,7 @@ export const updateCollisions = update => {
 	})
 
 	state.bullets.filter(x => x.active && x.visible).forEach(x => {
-		if (collision(player, x)) {
+		if (sidedCollision(x, collision(x, player))) {
 			x.active = false
 			player.hitPoints -= 1
 		}
