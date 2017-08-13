@@ -7,7 +7,7 @@
     "dev": "webpack-dev-server --env=dev",
     "preprod": "rm -rf ./dist",
     "prod": "webpack --env=prod",
-    "postprod": "cd dist && zip -r strawberry.zip .",
+    "postprod": "cp local/* dist/ && cd dist && zip -r strawberry.zip .",
     "spritesheet": "spritesheet-js --format pixi.js --trim --padding 2 --name sprites --path ./src/assets/ src/assets/sprites/*.png",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
