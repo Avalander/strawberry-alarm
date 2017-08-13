@@ -9,7 +9,7 @@ module.exports = (baseDir, folders) => ({
 	output: {
 		path: path.resolve(baseDir, folders.DIST),
 		filename: '[name].bundle.js',
-		sourceMapFilename: '[name].map'
+		//sourceMapFilename: '[name].map'
 	},
 	module: {
 		rules: [{

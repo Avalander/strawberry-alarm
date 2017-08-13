@@ -80,6 +80,9 @@ const initState = () => ([{
 const commands = {
 	attack: () => ({ player }) => {
 		if (player.state !== playerStates.jumping) {
+			if (player.state === playerStates.crouching) {
+				player.resumeToState = playerStates.crouching
+			}
 			player.state = playerStates.attacking
 		}
 	},
@@ -115,13 +118,19 @@ const commands = {
 			player.resumeToState = playerStates.idle
 		}
 	},
+	stopCrouching: () => ({ player }) => {
+		if (player.state === playerStates.crouching) {
+			if (player.resumeToState === playerStates.crouching) {
+				player.state = playerStates.idle
+				player.resumeToState = playerStates.idle
+			}
+			else {
+				player.state = player.resumeToState
+			}
+		}
+	},
 	resume: (fromState) => ({ player }) => {
-		if (!fromState || player.state === fromState) {
-			player.state = player.state !== player.resumeToState ? player.resumeToState : playerStates.idle
-		}
-		else if (fromState && player.resumeToState === fromState) {
-			player.resumeToState = playerStates.idle
-		}
+		player.state = player.resumeToState
 	},
 	resumeAlien: id => ({ aliens }) => {
 		const alien = aliens.find(x => x.id === id)
@@ -170,7 +179,7 @@ const actionHandlers = {
 				return [commands.stop(directions.left)]
 			case keys.down:
 			case keys.s:
-				return [commands.resume(playerStates.crouching)]
+				return [commands.stopCrouching()]
 			default:
 				return [commands.none()]
 		}
