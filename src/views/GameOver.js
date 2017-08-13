@@ -15,7 +15,7 @@ export default function GameOver({ DOM }) {
 	const vtree$ = xs.of(
 		div('.content', [
 			h1('Game Over!'),
-			span('Congratulations on finishing a game with such an epic lenght!'),
+			span('Congratulations on finishing a game with such an epic length!'),
 			div(button('.back', 'Back to Main Menu')),
 			span(' '),
 		])
