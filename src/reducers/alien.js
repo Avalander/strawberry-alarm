@@ -25,8 +25,8 @@ const initAlienDying = ()  => animatedSprite({
 	props: {
 		position: { x: 0, y: 0 },
 		animationSpeed: 0.1,
-		loop: false,
-	}
+		stopAt: 3,
+	},
 })
 
 const initAlienAttacking = () => animatedSprite({
@@ -54,9 +54,7 @@ export const alienDyingReducer = ({ aliens_dying }, [ state ]) => {
 		aliens_dying[i].props.position.x = dyingAliens[i].x - state.camera.x
 		aliens_dying[i].props.position.y = dyingAliens[i].y
 		aliens_dying[i].props.visible = dyingAliens[i].visible
-		if (dyingAliens[i].stateChanged) {
-			aliens_dying[i].play = 'alien-die'
-		}
+		aliens_dying[i].play = dyingAliens[i].stateChanged ? 'alien-die' : undefined
 	}
 	for (let i=dyingAliens.length; i<aliens_dying.length; i++) {
 		aliens_dying[i].props.visible = false

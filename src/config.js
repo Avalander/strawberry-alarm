@@ -37,7 +37,7 @@ export const alien = {
 		moving: -0.5,
 		dying: 2,
 	},
-	shootFreq: 500,
+	shootFreq: 400,
 	shootDistance: 600,
 	shootAngle: 50,
 	bullet: {
