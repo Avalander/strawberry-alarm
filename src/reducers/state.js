@@ -43,7 +43,7 @@ const initState = () => ([{
 		hitBox: {
 			x: 70,
 			y: 31,
-			width: 70,
+			width: 80,
 			height: 40,
 		},
 	},
