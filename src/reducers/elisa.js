@@ -64,7 +64,7 @@ const initElisaCrouching = () => animatedSprite({
 	props: {
 		position: { x: 50, y },
 		scale: { x: 1, y: 1 },
-		animationSpeed: 0.2,
+		animationSpeed: 0.4,
 		visible: false,
 		stopAt: 4,
 	}

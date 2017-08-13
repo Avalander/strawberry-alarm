@@ -26,12 +26,18 @@ const initState = () => ([{
 		x: 50,
 		y: 360,
 		speed: { x: 0, y: 0 },
-		hitBox: {
+		normalHitBox: {
 			x: 30,
 			y: 22,
 			width: 42,
 			height: 78,
 		},
+		crouchingHitBox: {
+			x: 30,
+			y: 58,
+			width: 42,
+			height: 42,
+		}
 	},
 	playerAttack: {
 		hitBox: {
@@ -97,6 +103,11 @@ const commands = {
 		if (player.state !== playerStates.attacking && player.state !== playerStates.jumping) {
 			player.state = playerStates.crouching
 		}
+		/*
+		else if (player.state === playerStates.attacking) {
+			player.resumeToState = playerStates.crouching
+		}
+		*/
 	},
 	stop: direction => ({ player }) => {
 		if (direction === player.direction) {
@@ -178,6 +189,7 @@ export const gameStateReducer = (state=initState(), [ command, dt]) => {
 			c(state[0])
 			c.executed = true
 		})
+	player.hitBox = player.state === playerStates.crouching ? player.crouchingHitBox : player.normalHitBox
 	state[1] = dt
 	return state
 }
