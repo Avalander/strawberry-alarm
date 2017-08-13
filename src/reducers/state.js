@@ -126,10 +126,13 @@ const actionHandlers = {
 			case keys.space:
 				return [commands.attack()]
 			case keys.up:
+			case keys.w:
 				return [commands.jump()]
 			case keys.right:
+			case keys.d:
 				return [commands.changeDirection(directions.right), commands.move()]
 			case keys.left:
+			case keys.a:
 				return [commands.changeDirection(directions.left), commands.move()]
 			default:
 				return [commands.none()]
@@ -138,8 +141,10 @@ const actionHandlers = {
 	'keyup': value => {
 		switch (value) {
 			case keys.right:
+			case keys.d:
 				return [commands.stop(directions.right)]
 			case keys.left:
+			case keys.a:
 				return [commands.stop(directions.left)]
 			default:
 				return [commands.none()]

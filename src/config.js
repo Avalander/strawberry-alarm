@@ -9,6 +9,10 @@ export const keys = {
 	right: 39,
 	down: 40,
 	space: 32,
+	a: 65,
+	d: 68,
+	w: 87,
+	s: 83,
 }
 
 export const directions = {
