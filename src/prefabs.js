@@ -5,9 +5,9 @@ let nextAlienId = 1
 
 export const alien = () => ({
 	hitBox: {
-		x: 30,
+		x: 32,
 		y: 5,
-		width: 50,
+		width: 46,
 		height: 103,
 	},
 	speed: {
