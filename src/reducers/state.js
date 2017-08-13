@@ -259,7 +259,7 @@ export const updateAliens = state => {
 			return x
 		})
 		.map((x, i) => {
-			if (x.fired) {
+			if (x.fired && x.state !== alienStates.dying) {
 				bullets[i].active = true
 				bullets[i].x = x.x
 				bullets[i].y = x.y + 45
