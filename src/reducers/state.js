@@ -103,11 +103,9 @@ const commands = {
 		if (player.state !== playerStates.attacking && player.state !== playerStates.jumping) {
 			player.state = playerStates.crouching
 		}
-		/*
-		else if (player.state === playerStates.attacking) {
+		else if (player.state === playerStates.attacking || player.state === playerStates.jumping) {
 			player.resumeToState = playerStates.crouching
 		}
-		*/
 	},
 	stop: direction => ({ player }) => {
 		if (direction === player.direction) {
@@ -119,7 +117,10 @@ const commands = {
 	},
 	resume: (fromState) => ({ player }) => {
 		if (!fromState || player.state === fromState) {
-			player.state = player.resumeToState
+			player.state = player.state !== player.resumeToState ? player.resumeToState : playerStates.idle
+		}
+		else if (fromState && player.resumeToState === fromState) {
+			player.resumeToState = playerStates.idle
 		}
 	},
 	resumeAlien: id => ({ aliens }) => {
